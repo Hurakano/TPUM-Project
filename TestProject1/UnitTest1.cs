@@ -9,7 +9,7 @@ namespace TestProject1
         [TestMethod]
         public void Test1()
         {
-           Class1 testObject = new Class1();
+            Class1 testObject = new Class1();
             testObject.function1();
         }
     }
