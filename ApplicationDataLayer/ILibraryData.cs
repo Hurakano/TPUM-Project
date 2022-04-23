@@ -5,22 +5,24 @@ namespace ApplicationDataLayer
 {
     public interface ILibraryData
     {
-        void AddBook(Book book);
-        Book GetBook(int id);
-        List<Book> GetBooks();
-        void UpdateBook(int id, Book book);
-        void RemoveBook(int id);
+        void FillData(IDataFiller filler);
 
-        void AddReader(Reader reader);
-        Reader GetReader(int id);
-        List<Reader> GetReaders();
-        void UpdateReader(int id, Reader reader);
-        void RemoveReader(int id);
+        Guid AddBook(Book book);
+        Book GetBook(Guid id);
+        Dictionary<Guid, Book> GetBooks();
+        void UpdateBook(Guid id, Book book);
+        void RemoveBook(Guid id);
 
-        void AddLoan(Loan loan);
-        Loan GetLoan(int id);
-        List<Loan> GetLoans();
-        void UpdateLoan(int id, Loan loan);
-        void RemoveLoan(int id);
+        Guid AddReader(Reader reader);
+        Reader GetReader(Guid id);
+        Dictionary<Guid, Reader> GetReaders();
+        void UpdateReader(Guid id, Reader reader);
+        void RemoveReader(Guid id);
+
+        Guid AddLoan(Loan loan);
+        Loan GetLoan(Guid id);
+        Dictionary<Guid, Loan> GetLoans();
+        void UpdateLoan(Guid id, Loan loan);
+        void RemoveLoan(Guid id);
     }
 }

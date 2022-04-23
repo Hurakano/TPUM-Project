@@ -6,15 +6,15 @@ namespace ApplicationDataLayer
 {
     public class DataContext
     {
-        public List<Book> Books;
-        public List<Reader> Readers;
-        public List<Loan> Loans;
+        public Dictionary<Guid, Book> Books;
+        public Dictionary<Guid, Reader> Readers;
+        public Dictionary<Guid, Loan> Loans;
 
         public DataContext()
         {
-            Books = new List<Book>();
-            Readers = new List<Reader>();
-            Loans = new List<Loan>();
+            Books = new Dictionary<Guid, Book>();
+            Readers = new Dictionary<Guid, Reader>();
+            Loans = new Dictionary<Guid, Loan>();
         }
     }
 }

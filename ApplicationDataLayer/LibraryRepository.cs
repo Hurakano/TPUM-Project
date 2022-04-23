@@ -8,34 +8,85 @@ namespace ApplicationDataLayer
     {
         private readonly DataContext RepoData = new DataContext();
 
-        public void AddBook(Book book) => RepoData.Books.Add(book);
+        public void FillData(IDataFiller filler)
+        {
+            filler.FillData(this);
+        }
 
-        public Book GetBook(int id) { return RepoData.Books[id]; }
+        public Guid AddBook(Book book)
+        {
+            Guid id = Guid.NewGuid();
+            RepoData.Books.Add(id, book);
+            return id;
+        }
 
-        public List<Book> GetBooks() { return RepoData.Books; }
+        public Book GetBook(Guid id)
+        {
+            if (RepoData.Books.ContainsKey(id))
+                return RepoData.Books[id];
+            else
+                return null;
+        }
 
-        public void UpdateBook(int id, Book book) => RepoData.Books[id] = book;
+        public Dictionary<Guid, Book> GetBooks() { return RepoData.Books; }
 
-        public void RemoveBook(int id) => RepoData.Books.RemoveAt(id);
+        public void UpdateBook(Guid id, Book book)
+        {
+            if (RepoData.Books.ContainsKey(id))
+                RepoData.Books[id] = book;
+        }
 
-        public void AddReader(Reader reader) => RepoData.Readers.Add(reader);
+        public void RemoveBook(Guid id) { RepoData.Books.Remove(id); }
 
-        public Reader GetReader(int id) { return RepoData.Readers[id]; }
+        public Guid AddReader(Reader reader)
+        {
+            Guid id = Guid.NewGuid();
+            RepoData.Readers.Add(id, reader);
+            return id;
+        }
 
-        public List<Reader> GetReaders() { return RepoData.Readers; }
+        public Reader GetReader(Guid id)
+        {
+            if (RepoData.Readers.ContainsKey(id))
+                return RepoData.Readers[id];
+            else
+                return null;
+        }
 
-        public void UpdateReader(int id, Reader reader) => RepoData.Readers[id] = reader;
+        public Dictionary<Guid, Reader> GetReaders() { return RepoData.Readers; }
 
-        public void RemoveReader(int id) => RepoData.Readers.RemoveAt(id);
+        public void UpdateReader(Guid id, Reader reader)
+        {
+            if (RepoData.Readers.ContainsKey(id))
+                RepoData.Readers[id] = reader;
+        }
 
-        public void AddLoan(Loan loan) => RepoData.Loans.Add(loan);
+        public void RemoveReader(Guid id) { RepoData.Readers.Remove(id); }
 
-        public Loan GetLoan(int id) { return RepoData.Loans[id]; }
+        public Guid AddLoan(Loan loan)
+        {
+            Guid id = Guid.NewGuid();
+            RepoData.Loans.Add(id, loan);
+            return id;
 
-        public List<Loan> GetLoans() { return RepoData.Loans; }
+        }
 
-        public void UpdateLoan(int id, Loan loan) => RepoData.Loans[id] = loan;
+        public Loan GetLoan(Guid id)
+        {
+            if (RepoData.Loans.ContainsKey(id))
+                return RepoData.Loans[id];
+            else
+                return null;
+        }
 
-        public void RemoveLoan(int id) => RepoData.Loans.RemoveAt(id);
+        public Dictionary<Guid, Loan> GetLoans() { return RepoData.Loans; }
+
+        public void UpdateLoan(Guid id, Loan loan)
+        {
+            if (RepoData.Loans.ContainsKey(id))
+                RepoData.Loans[id] = loan;
+        }
+
+        public void RemoveLoan(Guid id) { RepoData.Loans.Remove(id); }
     }
 }
