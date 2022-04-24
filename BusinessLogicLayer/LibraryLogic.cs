@@ -291,9 +291,8 @@ namespace BusinessLogicLayer
         {
             List<LoanDTO> loans = GetOverdueLoans(DateTime.Now);
 
-            foreach (LoanDTO loan in loans)
-                foreach (IObserver<LoanDTO> observer in EventObservers)
-                    observer.OnNext(loan);
+            foreach (IObserver<List<LoanDTO>> observer in EventObservers)
+                observer.OnNext(loans);
         }
     }
 }
