@@ -5,23 +5,42 @@ using System.Timers;
 
 namespace BusinessLogicLayer
 {
-    public class LibraryLogic: IBusinessLogic, IObservable<LoanDTO>
+    public class LibraryLogic: IBusinessLogic, IObservable<List<LoanDTO>>
     {
         private readonly ILibraryData DataRepository;
-        private readonly List<IObserver<LoanDTO>> EventObservers;
+        private readonly List<IObserver<List<LoanDTO>>> EventObservers;
         private readonly Timer EventTimer;
 
         public LibraryLogic(ILibraryData repository)
         {
             DataRepository = repository;
-            EventObservers = new List<IObserver<LoanDTO>>();
-            EventTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds)
+            EventObservers = new List<IObserver<List<LoanDTO>>>();
+            EventTimer = new Timer(TimeSpan.FromSeconds(10).TotalMilliseconds)
             {
                 AutoReset = true
             };
             EventTimer.Elapsed += new ElapsedEventHandler(CheckForOverdueLoans);
             EventTimer.Start();
 
+        }
+
+        public static IBusinessLogic Create(int repositorySelect)
+        {
+            ILibraryData data;
+
+            switch (repositorySelect)
+            {
+                default:
+                case 0:
+                    data = new LibraryRepository();
+                    break;
+                case 1:
+                    data = new LibraryRepository();
+                    data.FillData(new ExampleFiller());
+                    break;
+            }
+
+            return new LibraryLogic(data);
         }
 
         public void AddNewBook(BookDTO book)
@@ -138,6 +157,17 @@ namespace BusinessLogicLayer
             else
                 return null;
         }
+        public void ReturnBook(Guid bookId)
+        {
+            foreach (KeyValuePair<Guid, Loan> x in DataRepository.GetLoans())
+            {
+                if (x.Value.BookId == bookId)
+                {
+                    DataRepository.RemoveLoan(x.Key);
+                    break;
+                }
+            }
+        }
         public List<LoanDTO> GetAllLoans()
         {
             List<LoanDTO> loanList = new List<LoanDTO>();
@@ -230,12 +260,12 @@ namespace BusinessLogicLayer
             return loanList;
         }
 
-        public IDisposable SubscribeToOverdueEvent(IObserver<LoanDTO> observer)
+        public IDisposable SubscribeToOverdueEvent(IObserver<List<LoanDTO>> observer)
         {
             return Subscribe(observer);
         }
 
-        public IDisposable Subscribe(IObserver<LoanDTO> observer)
+        public IDisposable Subscribe(IObserver<List<LoanDTO>> observer)
         {
             EventObservers.Add(observer);
 
@@ -244,9 +274,9 @@ namespace BusinessLogicLayer
 
         private class EventUnsubscriber: IDisposable
         {
-            private readonly List<IObserver<LoanDTO>> ObserverList;
-            private readonly IObserver<LoanDTO> Observer;
-            public EventUnsubscriber(List<IObserver<LoanDTO>> _observerList, IObserver<LoanDTO> _observer)
+            private readonly List<IObserver<List<LoanDTO>>> ObserverList;
+            private readonly IObserver<List<LoanDTO>> Observer;
+            public EventUnsubscriber(List<IObserver<List<LoanDTO>>> _observerList, IObserver<List<LoanDTO>> _observer)
             {
                 ObserverList = _observerList;
                 Observer = _observer;

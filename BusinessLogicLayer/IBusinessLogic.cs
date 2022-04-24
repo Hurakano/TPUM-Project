@@ -21,6 +21,7 @@ namespace BusinessLogicLayer
 
         void LoanBook(Guid readerId, Guid bookId, DateTime now, DateTime returnDate);
         void RemoveLoanById(Guid id);
+        void ReturnBook(Guid bookId);
         LoanDTO GetLoanById(Guid id);
         List<LoanDTO> GetAllLoans();
         List<LoanDTO> GetAllLoansByReader(Guid readerId);
@@ -28,6 +29,6 @@ namespace BusinessLogicLayer
         List<LoanDTO> GetLoansBetweenDates(DateTime begin, DateTime end);
         List<LoanDTO> GetOverdueLoans(DateTime currentDate);
 
-        IDisposable SubscribeToOverdueEvent(IObserver<LoanDTO> observer);
+        IDisposable SubscribeToOverdueEvent(IObserver<List<LoanDTO>> observer);
     }
 }

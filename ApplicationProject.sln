@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationDataLayer", "App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayerTests", "Tests\DataLayerTests\DataLayerTests.csproj", "{C9E16EBB-2A03-4DC8-8FC2-D18EC39F7FAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{A1B5B958-8358-44A6-B3F5-B271CDE19293}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{A1B5B958-8358-44A6-B3F5-B271CDE19293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicLayerTests", "Tests\LogicLayerTests\LogicLayerTests.csproj", "{50DC58E2-5535-46E8-922B-D48F18A375E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLayerTests", "Tests\LogicLayerTests\LogicLayerTests.csproj", "{50DC58E2-5535-46E8-922B-D48F18A375E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryModel", "LibraryModel\LibraryModel.csproj", "{16DB5AB1-E897-474B-B220-A6134F7536F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{50DC58E2-5535-46E8-922B-D48F18A375E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50DC58E2-5535-46E8-922B-D48F18A375E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50DC58E2-5535-46E8-922B-D48F18A375E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16DB5AB1-E897-474B-B220-A6134F7536F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16DB5AB1-E897-474B-B220-A6134F7536F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16DB5AB1-E897-474B-B220-A6134F7536F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16DB5AB1-E897-474B-B220-A6134F7536F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
