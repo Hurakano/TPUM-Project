@@ -353,22 +353,22 @@ namespace BusinessLogicLayer.Test
             Assert.AreEqual(loanCheck.Count, 5);
         }
 
-        class ObserverTestClass : IObserver<LoanDTO>
+        class ObserverTestClass : IObserver<List<LoanDTO>>
         {
             public List<LoanDTO> ReceivedEvents = new List<LoanDTO>();
             public void OnCompleted()
             {
-                
+
             }
 
             public void OnError(Exception error)
             {
-                
+
             }
 
-            public void OnNext(LoanDTO value)
+            public void OnNext(List<LoanDTO> value)
             {
-                ReceivedEvents.Add(value);
+                ReceivedEvents = value;
             }
         }
 
