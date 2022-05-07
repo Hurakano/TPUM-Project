@@ -14,13 +14,13 @@ namespace PresentationLayer.LibraryModel
         public string ReturnDateText { get; set; }
         public DateTime ReturnDate { get; set; }
 
-        public LoanPresenter(string _bookTitle, string _readerName, LoanDTO loan)
+        public LoanPresenter(string _bookTitle, string _readerName, Guid bookId, Guid readerId, DateTime returnDate)
         {
             BookTitle = _bookTitle;
             ReaderName = _readerName;
-            BookId = loan.BookId;
-            ReaderId = loan.ReaderId;
-            ReturnDate = loan.ReturnDate;
+            BookId = bookId;
+            ReaderId =readerId;
+            ReturnDate = returnDate;
             ReturnDateText = ReturnDate.ToString("dd/MM/yyyy");
         }
     }

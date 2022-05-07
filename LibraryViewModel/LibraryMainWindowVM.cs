@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using BusinessLogicLayer;
-using PresentationLayer.LibraryModel;
 using System.Windows.Input;
+using PresentationLayer.LibraryModel;
 
 namespace PresentationLayer.LibraryViewModel
 {
     public class LibraryMainWindowVM : LibraryViewModelBase
     {
-        private ObservableCollection<ReaderDTO> b_Readers = new ObservableCollection<ReaderDTO>();
-        private ReaderDTO b_SelectedReader = null;
+        private ObservableCollection<ReaderPresenter> b_Readers = new ObservableCollection<ReaderPresenter>();
+        private ReaderPresenter b_SelectedReader = null;
         private ObservableCollection<LoanPresenter> b_LoansOfReader = new ObservableCollection<LoanPresenter>();
         private ObservableCollection<LoanPresenter> b_OverdueLoans = new ObservableCollection<LoanPresenter>();
-        private ObservableCollection<BookDTO> b_Books = new ObservableCollection<BookDTO>();
-        private BookDTO b_SelectedBook = null;
+        private ObservableCollection<BookPresenter> b_Books = new ObservableCollection<BookPresenter>();
+        private BookPresenter b_SelectedBook = null;
         private Nullable<DateTime> b_ReturnTime;
 
         public ICommand OnBookReturn { get; set; }
@@ -23,21 +22,21 @@ namespace PresentationLayer.LibraryViewModel
 
         public LibraryMainWindowVM()
         {
-            DataModel = new LibraryModel.LibraryModel();
+            DataModel = AbstractLibraryModel.GetModel();
 
             OnBookReturn = new CommandForwarder_P1<Guid>((id) => BookReturn(id));
             OnBorrowBook = new CommandForwarder(() => BorrowBook());
 
             DataModel.OverdueWatcher.OverdueEvent += OnOverdueEvent;
 
-            foreach (ReaderDTO reader in DataModel.GetReaders())
+            foreach (ReaderPresenter reader in DataModel.GetReaders())
             {
                 b_Readers.Add(reader);
             }
             RefreshAvailableBooks();
         }
 
-        public ObservableCollection<ReaderDTO> Readers
+        public ObservableCollection<ReaderPresenter> Readers
         {
             get { return b_Readers; }
             set
@@ -50,7 +49,7 @@ namespace PresentationLayer.LibraryViewModel
             }
         }
 
-        public ReaderDTO SelectedReader
+        public ReaderPresenter SelectedReader
         {
             get { return b_SelectedReader; }
             set
@@ -74,7 +73,7 @@ namespace PresentationLayer.LibraryViewModel
             }
         }
 
-        public BookDTO SelectedBook
+        public BookPresenter SelectedBook
         {
             get { return b_SelectedBook; }
             set
@@ -94,7 +93,7 @@ namespace PresentationLayer.LibraryViewModel
             }
         }
 
-        public ObservableCollection<BookDTO> AvailableBooks
+        public ObservableCollection<BookPresenter> AvailableBooks
         {
             get { return b_Books; }
             set
@@ -118,9 +117,9 @@ namespace PresentationLayer.LibraryViewModel
         {
             OverdueLoansEventArgs args = (OverdueLoansEventArgs)e;
             ObservableCollection<LoanPresenter> newLoans = new ObservableCollection<LoanPresenter>();
-            foreach (LoanDTO loan in args.Loans)
+            foreach (Guid loanId in args.LoanIds)
             {
-                newLoans.Add(DataModel.GetPresentedLoan(loan));
+                newLoans.Add(DataModel.GetLoanById(loanId));
             }
 
             b_OverdueLoans = newLoans;
@@ -170,7 +169,7 @@ namespace PresentationLayer.LibraryViewModel
         private void RefreshAvailableBooks()
         {
             b_Books.Clear();
-            foreach (BookDTO book in DataModel.GetAvailableBooks())
+            foreach (BookPresenter book in DataModel.GetAvailableBooks())
             {
                 b_Books.Add(book);
             }

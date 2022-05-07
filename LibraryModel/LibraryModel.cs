@@ -4,11 +4,9 @@ using BusinessLogicLayer;
 
 namespace PresentationLayer.LibraryModel
 {
-    public class LibraryModel
+    class LibraryModel: AbstractLibraryModel
     {
         private IBusinessLogic Library;
-        public OverdueReporter OverdueWatcher;
-        private IDisposable ObserverStopper;
 
         public LibraryModel()
         {
@@ -22,43 +20,52 @@ namespace PresentationLayer.LibraryModel
             ObserverStopper.Dispose();
         }
 
-        public List<ReaderDTO> GetReaders()
+        public override List<ReaderPresenter> GetReaders()
         {
-            return Library.GetAllReaders();
+            List<ReaderPresenter> readers = new List<ReaderPresenter>();
+
+            foreach(ReaderDTO reader in Library.GetAllReaders())
+            {
+                readers.Add(new ReaderPresenter(reader.Id, reader.Name));
+            }
+
+            return readers;
         }
 
-        public ReaderDTO GetReaderByName(string name)
-        {
-            return Library.GetReaderByName(name);
-        }
-
-        public List<LoanPresenter> GetLoansByReader(Guid readerId)
+        public override List<LoanPresenter> GetLoansByReader(Guid readerId)
         {
             List<LoanPresenter> presentLoans = new List<LoanPresenter>();
             foreach (LoanDTO loan in Library.GetAllLoansByReader(readerId))
             {
-                presentLoans.Add(new LoanPresenter(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(readerId).Name, loan));
+                presentLoans.Add(new LoanPresenter(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(readerId).Name, loan.BookId, loan.ReaderId, loan.ReturnDate));
             }
 
             return presentLoans;
         }
 
-        public LoanPresenter GetPresentedLoan(LoanDTO loan)
+        public override LoanPresenter GetLoanById(Guid loanId)
         {
-            return new LoanPresenter(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(loan.ReaderId).Name, loan);
+            LoanDTO loan = Library.GetLoanById(loanId);
+            return new LoanPresenter(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(loan.ReaderId).Name, loan.BookId, loan.ReaderId, loan.ReturnDate);
         }
 
-        public List<BookDTO> GetAvailableBooks()
+        public override List<BookPresenter> GetAvailableBooks()
         {
-            return Library.GetAvailableBooks();
+            List<BookPresenter> books = new List<BookPresenter>();
+            foreach(BookDTO book in Library.GetAvailableBooks())
+            {
+                books.Add(new BookPresenter(book.Id, book.Title, book.Author));
+            }
+
+            return books;
         }
 
-        public void ReturnBook(Guid bookId)
+        public override void ReturnBook(Guid bookId)
         {
             Library.ReturnBook(bookId);
         }
 
-        public void BorrowBook(Guid readerId, Guid bookId, DateTime timeOffset)
+        public override void BorrowBook(Guid readerId, Guid bookId, DateTime timeOffset)
         {
             DateTime time = DateTime.Now;
             Library.LoanBook(readerId, bookId, time, timeOffset);

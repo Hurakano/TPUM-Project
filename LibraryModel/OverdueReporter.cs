@@ -21,13 +21,18 @@ namespace PresentationLayer.LibraryModel
 
         public void OnNext(List<LoanDTO> value)
         {
-            OverdueEvent?.Invoke(this, new OverdueLoansEventArgs { Loans = value });
+            List<Guid> ids = new List<Guid>();
+            foreach(LoanDTO loan in value)
+            {
+                ids.Add(loan.Id);
+            }
+            OverdueEvent?.Invoke(this, new OverdueLoansEventArgs { LoanIds = ids });
         }
     }
 
     public class OverdueLoansEventArgs : EventArgs
     {
-        public List<LoanDTO> Loans { get; set; }
+        public List<Guid> LoanIds { get; set; }
     }
 }
 

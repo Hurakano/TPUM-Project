@@ -8,7 +8,7 @@ namespace PresentationLayer.LibraryViewModel
     public abstract class LibraryViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        protected LibraryModel.LibraryModel DataModel;
+        protected LibraryModel.AbstractLibraryModel DataModel;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
