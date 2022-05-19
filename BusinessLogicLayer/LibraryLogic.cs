@@ -67,7 +67,7 @@ namespace BusinessLogicLayer
             foreach(KeyValuePair<Guid, Book> x in DataRepository.GetBooks())
             {
                 if (x.Value.Title == title)
-                    return new BookDTO() { Id = x.Key, Title = x.Value.Title, Author = x.Value.Title };
+                    return new BookDTO() { Id = x.Key, Title = x.Value.Title, Author = x.Value.Author };
             }
             return null;
         }
