@@ -1,10 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Moq;
-using ApplicationDataLayer;
+using LibraryServer.ApplicationDataLayer;
 using System.Collections.Generic;
 
-namespace BusinessLogicLayer.Test
+namespace LibraryServer.BusinessLogicLayer.Test
 {
     [TestClass]
     public class LibraryLogicTest

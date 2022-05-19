@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ApplicationDataLayer
+namespace LibraryServer.ApplicationDataLayer
 {
-    public class DataContext
+    internal class DataContext
     {
         public Dictionary<Guid, Book> Books;
         public Dictionary<Guid, Reader> Readers;

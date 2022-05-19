@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ApplicationDataLayer
+namespace LibraryServer.ApplicationDataLayer
 {
     public interface ILibraryData
     {

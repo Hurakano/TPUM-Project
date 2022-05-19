@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ApplicationDataLayer\ApplicationDataLayer.csproj" />
+    <ProjectReference Include="..\..\LibraryServer\ApplicationDataLayer\ApplicationDataLayer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using BusinessLogicLayer;
+using LibraryServer.BusinessLogicLayer;
 
-namespace ServerPresentation
+namespace LibraryServer.ServerPresentation
 {
     class Program
     {

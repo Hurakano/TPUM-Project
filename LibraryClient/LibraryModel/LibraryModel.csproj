@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
+    <ProjectReference Include="..\..\LibraryServer\BusinessLogicLayer\BusinessLogicLayer.csproj" />
   </ItemGroup>
   
 </Project>

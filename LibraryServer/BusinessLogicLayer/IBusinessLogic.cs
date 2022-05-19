@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BusinessLogicLayer
+namespace LibraryServer.BusinessLogicLayer
 {
     public interface IBusinessLogic
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApplicationDataLayer;
+using LibraryServer.ApplicationDataLayer;
 using System.Timers;
 
-namespace BusinessLogicLayer
+namespace LibraryServer.BusinessLogicLayer
 {
     public class LibraryLogic: IBusinessLogic, IObservable<List<LoanDTO>>
     {

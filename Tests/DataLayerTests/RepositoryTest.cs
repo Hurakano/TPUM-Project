@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ApplicationDataLayer.Test
+namespace LibraryServer.ApplicationDataLayer.Test
 {
     [TestClass]
     public class RepositoryTest

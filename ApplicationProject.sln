@@ -3,21 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryView", "LibraryView\LibraryView.csproj", "{B5F388FE-561F-4A94-A9CD-6A93263A7A4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryView", "LibraryClient\LibraryView\LibraryView.csproj", "{B5F388FE-561F-4A94-A9CD-6A93263A7A4D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationDataLayer", "ApplicationDataLayer\ApplicationDataLayer.csproj", "{FDC49AAD-BB28-40B4-B481-E9FCD1D9D7D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationDataLayer", "LibraryServer\ApplicationDataLayer\ApplicationDataLayer.csproj", "{FDC49AAD-BB28-40B4-B481-E9FCD1D9D7D0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayerTests", "Tests\DataLayerTests\DataLayerTests.csproj", "{C9E16EBB-2A03-4DC8-8FC2-D18EC39F7FAF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{A1B5B958-8358-44A6-B3F5-B271CDE19293}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogicLayer", "LibraryServer\BusinessLogicLayer\BusinessLogicLayer.csproj", "{A1B5B958-8358-44A6-B3F5-B271CDE19293}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLayerTests", "Tests\LogicLayerTests\LogicLayerTests.csproj", "{50DC58E2-5535-46E8-922B-D48F18A375E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryModel", "LibraryModel\LibraryModel.csproj", "{16DB5AB1-E897-474B-B220-A6134F7536F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryModel", "LibraryClient\LibraryModel\LibraryModel.csproj", "{16DB5AB1-E897-474B-B220-A6134F7536F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryViewModel", "LibraryViewModel\LibraryViewModel.csproj", "{98A9AD07-5D48-415E-AB3D-D92A360EB087}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryViewModel", "LibraryClient\LibraryViewModel\LibraryViewModel.csproj", "{98A9AD07-5D48-415E-AB3D-D92A360EB087}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerPresentation", "ServerPresentation\ServerPresentation.csproj", "{DB7868F2-24D9-421E-91F1-DE1326A076FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerPresentation", "LibraryServer\ServerPresentation\ServerPresentation.csproj", "{DB7868F2-24D9-421E-91F1-DE1326A076FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LibraryServer", "LibraryServer", "{6B960DE7-D50C-429F-A8F5-580D8865BBE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LibraryClient", "LibraryClient", "{D32C8826-1F37-484E-8DF5-604D9EB9DBBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +64,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B5F388FE-561F-4A94-A9CD-6A93263A7A4D} = {D32C8826-1F37-484E-8DF5-604D9EB9DBBD}
+		{FDC49AAD-BB28-40B4-B481-E9FCD1D9D7D0} = {6B960DE7-D50C-429F-A8F5-580D8865BBE4}
+		{A1B5B958-8358-44A6-B3F5-B271CDE19293} = {6B960DE7-D50C-429F-A8F5-580D8865BBE4}
+		{16DB5AB1-E897-474B-B220-A6134F7536F7} = {D32C8826-1F37-484E-8DF5-604D9EB9DBBD}
+		{98A9AD07-5D48-415E-AB3D-D92A360EB087} = {D32C8826-1F37-484E-8DF5-604D9EB9DBBD}
+		{DB7868F2-24D9-421E-91F1-DE1326A076FE} = {6B960DE7-D50C-429F-A8F5-580D8865BBE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9121BC11-D2C0-4B37-BF02-412F6D408508}

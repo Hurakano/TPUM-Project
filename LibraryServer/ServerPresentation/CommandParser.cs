@@ -2,9 +2,9 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
-using BusinessLogicLayer;
+using LibraryServer.BusinessLogicLayer;
 
-namespace ServerPresentation
+namespace LibraryServer.ServerPresentation
 {
     static class CommandParser
     {

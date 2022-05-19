@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ApplicationDataLayer\ApplicationDataLayer.csproj" />
-    <ProjectReference Include="..\..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
+    <ProjectReference Include="..\..\LibraryServer\ApplicationDataLayer\ApplicationDataLayer.csproj" />
+    <ProjectReference Include="..\..\LibraryServer\BusinessLogicLayer\BusinessLogicLayer.csproj" />
   </ItemGroup>
 
 </Project>

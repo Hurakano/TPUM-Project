@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerPresentation
+namespace LibraryServer.ServerPresentation
 {
     abstract class WebSocketConnection
     {

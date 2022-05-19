@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ApplicationDataLayer
+namespace LibraryServer.ApplicationDataLayer
 {
     public class LibraryRepository : ILibraryData
     {
