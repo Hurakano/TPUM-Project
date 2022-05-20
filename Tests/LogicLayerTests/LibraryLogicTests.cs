@@ -37,9 +37,11 @@ namespace LibraryServer.BusinessLogicLayer.Test
         [TestMethod]
         public void TestRemoveMethods()
         {
+            Guid testId = new Guid();
             DataMock.Setup(p => p.GetLoans()).Returns(new Dictionary<Guid, Loan>());
+            Loan loan = new Loan(new Guid(), new Guid(), new DateTime(), new DateTime());
+            DataMock.Setup(p => p.GetLoan(testId)).Returns(loan);
 
-            Guid testId = Guid.NewGuid();
             Logic.RemoveBookById(testId);
             Logic.RemoveReaderById(testId);
             Logic.RemoveLoanById(testId);

@@ -10,7 +10,7 @@ namespace PresentationLayer.LibraryModel
 
         public LibraryModel()
         {
-            Library = LibraryLogic.Create(1);
+            Library = LibraryLogicFactory.Create(1);
             OverdueWatcher = new OverdueReporter();
             ObserverStopper = Library.SubscribeToOverdueEvent(OverdueWatcher);
         }

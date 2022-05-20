@@ -8,8 +8,8 @@ namespace LibraryServer.ServerPresentation
     {
         static async Task Main(string[] args)
         {
-            CommandParser.LibraryLogic = LibraryLogic.Create(1);
-            await WebServer.Server(8080, CommandParser.OnConnectionSocket);
+            CommandHandler.LibraryLogic = LibraryLogicFactory.Create(1);
+            await WebServer.Server(8080, CommandHandler.OnConnectionSocket);
         }
     }
 }

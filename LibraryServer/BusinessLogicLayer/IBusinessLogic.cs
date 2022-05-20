@@ -6,7 +6,7 @@ namespace LibraryServer.BusinessLogicLayer
     public interface IBusinessLogic
     {
         void AddNewBook(BookDTO book);
-        void RemoveBookById(Guid id);
+        bool RemoveBookById(Guid id);
         BookDTO GetBookById(Guid id);
         BookDTO GetBookByTitle(string title);
         List<BookDTO> GetAllBooks();
@@ -14,14 +14,14 @@ namespace LibraryServer.BusinessLogicLayer
         bool IsBookLoaned(Guid bookId);
 
         void AddNewReader(ReaderDTO reader);
-        void RemoveReaderById(Guid id);
+        bool RemoveReaderById(Guid id);
         ReaderDTO GetReaderById(Guid id);
         ReaderDTO GetReaderByName(string name);
         List<ReaderDTO> GetAllReaders();
 
-        void LoanBook(Guid readerId, Guid bookId, DateTime now, DateTime returnDate);
-        void RemoveLoanById(Guid id);
-        void ReturnBook(Guid bookId);
+        bool LoanBook(Guid readerId, Guid bookId, DateTime now, DateTime returnDate);
+        bool RemoveLoanById(Guid id);
+        bool ReturnBook(Guid bookId);
         LoanDTO GetLoanById(Guid id);
         List<LoanDTO> GetAllLoans();
         List<LoanDTO> GetAllLoansByReader(Guid readerId);
@@ -30,5 +30,27 @@ namespace LibraryServer.BusinessLogicLayer
         List<LoanDTO> GetOverdueLoans(DateTime currentDate);
 
         IDisposable SubscribeToOverdueEvent(IObserver<List<LoanDTO>> observer);
+    }
+
+    public static class LibraryLogicFactory
+    {
+        public static IBusinessLogic Create(int repositorySelect)
+        {
+            ApplicationDataLayer.ILibraryData data;
+
+            switch (repositorySelect)
+            {
+                default:
+                case 0:
+                    data = new ApplicationDataLayer.LibraryRepository();
+                    break;
+                case 1:
+                    data = new ApplicationDataLayer.LibraryRepository();
+                    data.FillData(new ApplicationDataLayer.ExampleFiller());
+                    break;
+            }
+
+            return new LibraryLogic(data);
+        }
     }
 }

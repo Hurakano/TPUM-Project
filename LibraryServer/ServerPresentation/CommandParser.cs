@@ -6,21 +6,30 @@ using LibraryServer.BusinessLogicLayer;
 
 namespace LibraryServer.ServerPresentation
 {
-    static class CommandParser
+    class CommandHandler: IObserver<List<LoanDTO>>, IDisposable
     {
         public static IBusinessLogic LibraryLogic { get; set; }
-        private static WebSocketConnection SocketConnection;
+        private static List<CommandHandler> SocketHandlers = new List<CommandHandler>();
+
+        private WebSocketConnection SocketConnection;
+        private IDisposable EventUnsubscriber = null;
 
         public static void OnConnectionSocket(WebSocketConnection webSocket)
         {
             Console.WriteLine("Socket connected");
-            SocketConnection = webSocket;
-            webSocket.OnMessage = CommandParser.OnMessageSocket;
-            webSocket.OnClose = CommandParser.OnCloseSocket;
-            webSocket.OnError = CommandParser.OnErrorSocket;
+            CommandHandler handler = new CommandHandler();
+            handler.SocketConnection = webSocket;
+            webSocket.OnMessage = handler.OnMessageSocket;
+            webSocket.OnClose = handler.OnCloseSocket;
+            webSocket.OnError = handler.OnErrorSocket;
+            SocketHandlers.Add(handler);
+        }
+        private static void SocketClosed(CommandHandler _handler)
+        {
+            SocketHandlers.Remove(_handler);
         }
 
-        public static void OnMessageSocket(string message)
+        public void OnMessageSocket(string message)
         {
             Console.WriteLine(message);
             StringReader reader = new StringReader(message);
@@ -35,23 +44,31 @@ namespace LibraryServer.ServerPresentation
                     string title = reader.ReadLine();
                     GetBookByTitle(title);
                     break;
+                case "SubscribeEvent":
+                    if(EventUnsubscriber == null)
+                    {
+                        EventUnsubscriber = LibraryLogic.SubscribeToOverdueEvent(this);
+                    }
+                    break;
                 default:
                     Console.WriteLine("Unknown command");
                     return;
             }
         }
 
-        public static void OnCloseSocket()
+        public void OnCloseSocket()
         {
             Console.WriteLine("Socket closed");
+            CommandHandler.SocketClosed(this);
         }
 
-        public static void OnErrorSocket()
+        public void OnErrorSocket()
         {
             Console.WriteLine("Socket error");
+            CommandHandler.SocketClosed(this);
         }
 
-        private static void GetBooks()
+        private void GetBooks()
         {
             List<BookDTO> books = LibraryLogic.GetAllBooks();
             string message = books.Count.ToString() + "\n";
@@ -63,7 +80,7 @@ namespace LibraryServer.ServerPresentation
             _ = SocketConnection.SendAsync(message);
         }
 
-        private static void GetBookByTitle(string title)
+        private void GetBookByTitle(string title)
         {
             BookDTO book = LibraryLogic.GetBookByTitle(title);
             string message = "";
@@ -77,6 +94,39 @@ namespace LibraryServer.ServerPresentation
             }
 
             _ = SocketConnection.SendAsync(message);
+        }
+
+        public void OnCompleted()
+        {
+            EventUnsubscriber?.Dispose();
+            EventUnsubscriber = null;
+        }
+
+        public void OnError(Exception error)
+        {
+            EventUnsubscriber?.Dispose();
+            EventUnsubscriber = null;
+        }
+
+        public void OnNext(List<LoanDTO> value)
+        {
+            string message = "OverdueEvent\n";
+            message += value.Count.ToString() + "\n";
+
+            foreach(LoanDTO loan in value)
+            {
+                message += loan.Id.ToString() + "\n";
+                message += loan.BookId.ToString() + "\n";
+                message += loan.ReaderId.ToString() + "\n";
+                message += loan.ReturnDate.ToString() + "\n";
+            }
+
+            _ = SocketConnection.SendAsync(message);
+        }
+
+        public void Dispose()
+        {
+            EventUnsubscriber?.Dispose();
         }
     }
 }
