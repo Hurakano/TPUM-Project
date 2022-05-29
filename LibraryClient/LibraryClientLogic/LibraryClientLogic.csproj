@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibraryClientLogic\LibraryClientLogic.csproj" />
+    <ProjectReference Include="..\LibraryClientData\LibraryClientData.csproj" />
   </ItemGroup>
-  
+
 </Project>

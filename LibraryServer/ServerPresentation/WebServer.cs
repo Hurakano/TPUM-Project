@@ -11,7 +11,7 @@ namespace LibraryServer.ServerPresentation
     {
         public static async Task Server(int port, Action<WebSocketConnection> onConnection)
         {
-            Uri uri = new Uri($@"http://localhost:{port}/");
+            Uri uri = new Uri($"http://localhost:{port}/");
             await ServerLoop(uri, onConnection);
         }
 
@@ -48,6 +48,7 @@ namespace LibraryServer.ServerPresentation
 
         protected override Task SendTask(string message)
         {
+            Console.WriteLine("Message: " + message);
             ArraySegment<Byte> arraySeg = new ArraySegment<Byte>(Encoding.UTF8.GetBytes(message));
             return Socket.SendAsync(arraySeg, WebSocketMessageType.Text, true, CancellationToken.None);
         }

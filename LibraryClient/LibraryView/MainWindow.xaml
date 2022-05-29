@@ -78,6 +78,9 @@
                 <Button Command="{Binding OnBorrowBook}" Width="100" Height="30" Grid.Column="1" Margin="10 2">Borrow</Button>
                 <DatePicker SelectedDate="{Binding ReturnTime}" Width="200" Height="30" Grid.Column="1" Margin="10 2" />
             </StackPanel>
+            <TextBlock TextAlignment="Center" Background="{Binding TransactionResultColor}" Margin="10">
+                <Run Text="{Binding TransactionResultInfo}" />
+            </TextBlock>
         </StackPanel>
     </Grid>
 </Window>

@@ -6,18 +6,20 @@ using System.Threading;
 
 namespace LibraryServer.BusinessLogicLayer
 {
-    public class LibraryLogic: IBusinessLogic, IObservable<List<LoanDTO>>
+    public class LibraryLogic: IBusinessLogic, IObservable<List<LoanDTO>>, IObservable<DataTypeUpdated>
     {
         private readonly ILibraryData DataRepository;
         private readonly List<IObserver<List<LoanDTO>>> EventObservers;
+        private readonly List<IObserver<DataTypeUpdated>> DataUpdatedEventObservers;
         private readonly System.Timers.Timer EventTimer;
         private readonly ReaderWriterLockSlim DataLock = new ReaderWriterLockSlim();
-        private readonly ReaderWriterLockSlim OverdueObserverLock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim ObserverLock = new ReaderWriterLockSlim();
 
         public LibraryLogic(ILibraryData repository)
         {
             DataRepository = repository;
             EventObservers = new List<IObserver<List<LoanDTO>>>();
+            DataUpdatedEventObservers = new List<IObserver<DataTypeUpdated>>();
             EventTimer = new System.Timers.Timer(TimeSpan.FromSeconds(10).TotalMilliseconds)
             {
                 AutoReset = true
@@ -37,6 +39,8 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 DataLock.ExitWriteLock();
             }
+
+            NotifyDataUpdated(DataTypeUpdated.Books);
         }
         public bool RemoveBookById(Guid id)
         {
@@ -55,6 +59,8 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 DataLock.ExitWriteLock();
             }
+            if (success)
+                NotifyDataUpdated(DataTypeUpdated.Books);
 
             return success;
         }
@@ -173,6 +179,8 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 DataLock.ExitWriteLock();
             }
+
+            NotifyDataUpdated(DataTypeUpdated.Readers);
         }
         public bool RemoveReaderById(Guid id)
         {
@@ -192,6 +200,9 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 DataLock.ExitWriteLock();
             }
+
+            if (success)
+                NotifyDataUpdated(DataTypeUpdated.Readers);
 
             return success;
         }
@@ -274,6 +285,9 @@ namespace LibraryServer.BusinessLogicLayer
                 DataLock.ExitWriteLock();
             }
 
+            if (success)
+                NotifyDataUpdated(DataTypeUpdated.Loans);
+
             return success;
         }
         public bool RemoveLoanById(Guid id)
@@ -295,6 +309,9 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 DataLock.ExitWriteLock();
             }
+
+            if (success)
+                NotifyDataUpdated(DataTypeUpdated.Loans);
 
             return success;
         }
@@ -338,6 +355,9 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 DataLock.ExitWriteLock();
             }
+
+            if (success)
+                NotifyDataUpdated(DataTypeUpdated.Loans);
 
             return success;
         }
@@ -496,25 +516,45 @@ namespace LibraryServer.BusinessLogicLayer
 
         public IDisposable Subscribe(IObserver<List<LoanDTO>> observer)
         {
-            OverdueObserverLock.EnterWriteLock();
+            ObserverLock.EnterWriteLock();
             try
             {
                 EventObservers.Add(observer);
             }
             finally
             {
-                OverdueObserverLock.ExitWriteLock();
+                ObserverLock.ExitWriteLock();
             }
 
-            return new EventUnsubscriber(EventObservers, observer, OverdueObserverLock);
+            return new EventUnsubscriber<List<LoanDTO>>(EventObservers, observer, ObserverLock);
         }
 
-        private class EventUnsubscriber: IDisposable
+        public IDisposable SubscribeToDataUpdatedEvent(IObserver<DataTypeUpdated> observer)
         {
-            private readonly List<IObserver<List<LoanDTO>>> ObserverList;
-            private readonly IObserver<List<LoanDTO>> Observer;
+            return Subscribe(observer);
+        }
+
+        public IDisposable Subscribe(IObserver<DataTypeUpdated> observer)
+        {
+            ObserverLock.EnterWriteLock();
+            try
+            {
+                DataUpdatedEventObservers.Add(observer);
+            }
+            finally
+            {
+                ObserverLock.ExitWriteLock();
+            }
+
+            return new EventUnsubscriber<DataTypeUpdated>(DataUpdatedEventObservers, observer, ObserverLock);
+        }
+
+        private class EventUnsubscriber<T>: IDisposable
+        {
+            private readonly List<IObserver<T>> ObserverList;
+            private readonly IObserver<T> Observer;
             private readonly ReaderWriterLockSlim Lock;
-            public EventUnsubscriber(List<IObserver<List<LoanDTO>>> _observerList, IObserver<List<LoanDTO>> _observer, ReaderWriterLockSlim _lock)
+            public EventUnsubscriber(List<IObserver<T>> _observerList, IObserver<T> _observer, ReaderWriterLockSlim _lock)
             {
                 ObserverList = _observerList;
                 Observer = _observer;
@@ -537,18 +577,34 @@ namespace LibraryServer.BusinessLogicLayer
         public void CheckForOverdueLoans(object sender, ElapsedEventArgs args)
         {
             List<LoanDTO> loans = GetOverdueLoans(DateTime.Now);
+            if (loans.Count == 0)
+                return;
 
             try
             {
-                OverdueObserverLock.EnterReadLock();
+                ObserverLock.EnterReadLock();
                 foreach (IObserver<List<LoanDTO>> observer in EventObservers)
                     observer.OnNext(loans);
             }
             finally
             {
-                OverdueObserverLock.ExitReadLock();
+                ObserverLock.ExitReadLock();
             }
 
+        }
+
+        private void NotifyDataUpdated(DataTypeUpdated dataType)
+        {
+            try
+            {
+                ObserverLock.EnterReadLock();
+                foreach (IObserver<DataTypeUpdated> observer in DataUpdatedEventObservers)
+                    observer.OnNext(dataType);
+            }
+            finally
+            {
+                ObserverLock.ExitReadLock();
+            }
         }
     }
 }

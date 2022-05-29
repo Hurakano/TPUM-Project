@@ -5,7 +5,7 @@ using LibraryServer.BusinessLogicLayer;
 
 namespace LibraryServer.ServerPresentation
 {
-    class CommandHandler : IObserver<List<LoanDTO>>, IDisposable
+    class CommandHandler : IObserver<List<LoanDTO>>, IObserver<DataTypeUpdated>, IDisposable
     {
         private static IBusinessLogic m_logic = null;
         public static IBusinessLogic LibraryLogic
@@ -17,6 +17,7 @@ namespace LibraryServer.ServerPresentation
 
         private WebSocketConnection SocketConnection;
         private IDisposable EventUnsubscriber = null;
+        private IDisposable DataUpdatedUnsubscriber = null;
 
         public static void OnConnectionSocket(WebSocketConnection webSocket)
         {
@@ -53,6 +54,9 @@ namespace LibraryServer.ServerPresentation
                 case "GetReaders":
                     GetReaders();
                     break;
+                case "GetLoans":
+                    GetLoans();
+                    break;
                 case "GetLoansByReader":
                     tmpId = Guid.Parse(reader.ReadLine());
                     GetLoansByReader(tmpId);
@@ -78,6 +82,7 @@ namespace LibraryServer.ServerPresentation
                     if(EventUnsubscriber == null)
                     {
                         EventUnsubscriber = LibraryLogic.SubscribeToOverdueEvent(this);
+                        DataUpdatedUnsubscriber = m_logic.SubscribeToDataUpdatedEvent(this);
                     }
                     break;
                 default:
@@ -101,7 +106,7 @@ namespace LibraryServer.ServerPresentation
         private void GetBooks()
         {
             List<BookDTO> books = LibraryLogic.GetAllBooks();
-            string message = books.Count.ToString() + "\n";
+            string message = "Books\n" + books.Count.ToString() + "\n";
             foreach(BookDTO book in books)
             {
                 message += BookToString(book);
@@ -112,7 +117,7 @@ namespace LibraryServer.ServerPresentation
         private void GetBookByTitle(string title)
         {
             BookDTO book = LibraryLogic.GetBookByTitle(title);
-            string message = "";
+            string message = "Book\n";
             if (book != null)
             {
                 message += BookToString(book);
@@ -127,7 +132,7 @@ namespace LibraryServer.ServerPresentation
         private void GetReaders()
         {
             List<ReaderDTO> readers = LibraryLogic.GetAllReaders();
-            string message = readers.Count.ToString() + "\n";
+            string message = "Readers\n" + readers.Count.ToString() + "\n";
             foreach(ReaderDTO reader in readers)
             {
                 message += ReaderToString(reader);
@@ -135,10 +140,21 @@ namespace LibraryServer.ServerPresentation
 
             _ = SocketConnection.SendAsync(message);
         }
+        private void GetLoans()
+        {
+            List<LoanDTO> loans = LibraryLogic.GetAllLoans();
+            string message = "Loans\n" + loans.Count.ToString() + "\n";
+            foreach(LoanDTO loan in loans)
+            {
+                message += LoanToString(loan);
+            }
+
+            _ = SocketConnection.SendAsync(message);
+        }
         private void GetLoansByReader(Guid id)
         {
             List<LoanDTO> loans = LibraryLogic.GetAllLoansByReader(id);
-            string message = loans.Count.ToString() + "\n";
+            string message = "Loan\n" + loans.Count.ToString() + "\n";
             foreach(LoanDTO loan in loans)
             {
                 message += LoanToString(loan);
@@ -149,7 +165,7 @@ namespace LibraryServer.ServerPresentation
         private void GetLoanById(Guid id)
         {
             LoanDTO loan = LibraryLogic.GetLoanById(id);
-            string message = "";
+            string message = "Loan\n";
             if (loan != null)
                 message += LoanToString(loan) + "\n";
             else
@@ -160,7 +176,7 @@ namespace LibraryServer.ServerPresentation
         private void GetAvailableBooks()
         {
             List<BookDTO> books = LibraryLogic.GetAvailableBooks();
-            string message = books.Count.ToString() + "\n";
+            string message = "AvailableBooks\n" + books.Count.ToString() + "\n";
             foreach(BookDTO book in books)
             {
                 message += BookToString(book);
@@ -171,14 +187,14 @@ namespace LibraryServer.ServerPresentation
         private void ReturnBook(Guid id)
         {
             bool result = LibraryLogic.ReturnBook(id);
-            string message = result ? "true\n" : "false\n";
+            string message = "Result\n" + (result ? "true\n" : "false\n");
             _ = SocketConnection.SendAsync(message);
         }
-        private void BorrowBook(Guid readerId, Guid bookId, DateTime returnDate)
+        private void BorrowBook(Guid bookId, Guid readerId, DateTime returnDate)
         {
             DateTime borrowDate = DateTime.Now;
             bool result = LibraryLogic.LoanBook(readerId, bookId, borrowDate, returnDate);
-            string message = result ? "true\n" : "false\n";
+            string message = "Result\n" + (result ? "true\n" : "false\n");
             _ = SocketConnection.SendAsync(message);
         }
         private static string BookToString(BookDTO book)
@@ -220,9 +236,27 @@ namespace LibraryServer.ServerPresentation
             _ = SocketConnection.SendAsync(message);
         }
 
+        public void OnNext(DataTypeUpdated value)
+        {
+            switch(value)
+            {
+            case DataTypeUpdated.Books:
+                GetBooks();
+                break;
+            case DataTypeUpdated.Readers:
+                GetReaders();
+                break;
+            case DataTypeUpdated.Loans:
+                GetLoans();
+                break;
+            }
+        }
+
         public void Dispose()
         {
             EventUnsubscriber?.Dispose();
+            DataUpdatedUnsubscriber?.Dispose();
         }
+
     }
 }

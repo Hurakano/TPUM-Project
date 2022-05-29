@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Tests\LogicLayerTests\LogicLayerTests.csproj" />
     <ProjectReference Include="..\LibraryViewModel\LibraryViewModel.csproj" />
   </ItemGroup>
 

@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using LibraryServer.BusinessLogicLayer;
+using LibraryClient.LibraryClientLogic;
 
 namespace PresentationLayer.LibraryModel
 {
     class LibraryModel: AbstractLibraryModel
     {
-        private IBusinessLogic Library;
+        private IClientLogic Library;
 
         public LibraryModel()
         {
-            Library = LibraryLogicFactory.Create(1);
+            Library = ClienLogicFactory.Create();
             OverdueWatcher = new OverdueReporter();
             ObserverStopper = Library.SubscribeToOverdueEvent(OverdueWatcher);
+            Library.OnDataUpdated += DataUpdatedHandler;
+            Library.OnTransactionResult += HandleTransactionResult;
         }
 
         ~LibraryModel()
@@ -67,8 +69,7 @@ namespace PresentationLayer.LibraryModel
 
         public override void BorrowBook(Guid readerId, Guid bookId, DateTime timeOffset)
         {
-            DateTime time = DateTime.Now;
-            Library.LoanBook(readerId, bookId, time, timeOffset);
+            Library.BorrowBook(bookId, readerId, timeOffset);
         }
     }
 }

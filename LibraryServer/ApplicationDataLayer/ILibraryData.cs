@@ -25,4 +25,12 @@ namespace LibraryServer.ApplicationDataLayer
         void UpdateLoan(Guid id, Loan loan);
         void RemoveLoan(Guid id);
     }
+
+    public static class LibraryDataFactory
+    {
+        public static ILibraryData CreateDataLayer()
+        {
+            return new LibraryRepository();
+        }
+    }
 }

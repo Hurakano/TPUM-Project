@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using LibraryServer.BusinessLogicLayer;
 
 namespace PresentationLayer.LibraryModel
 {

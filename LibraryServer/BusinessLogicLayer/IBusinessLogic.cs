@@ -30,6 +30,12 @@ namespace LibraryServer.BusinessLogicLayer
         List<LoanDTO> GetOverdueLoans(DateTime currentDate);
 
         IDisposable SubscribeToOverdueEvent(IObserver<List<LoanDTO>> observer);
+        IDisposable SubscribeToDataUpdatedEvent(IObserver<DataTypeUpdated> dataType);
+    }
+
+    public enum DataTypeUpdated
+    {
+        Readers, Books, Loans
     }
 
     public static class LibraryLogicFactory
@@ -42,10 +48,10 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 default:
                 case 0:
-                    data = new ApplicationDataLayer.LibraryRepository();
+                    data = ApplicationDataLayer.LibraryDataFactory.CreateDataLayer();
                     break;
                 case 1:
-                    data = new ApplicationDataLayer.LibraryRepository();
+                    data = ApplicationDataLayer.LibraryDataFactory.CreateDataLayer();
                     data.FillData(new ApplicationDataLayer.ExampleFiller());
                     break;
             }

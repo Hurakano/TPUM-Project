@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace LibraryServer.ServerPresentation
+namespace LibraryClient.LibraryClientData
 {
     abstract class WebSocketConnection
     {

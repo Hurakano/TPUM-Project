@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using System.Windows;
 using System.Windows.Input;
+using System.Timers;
 using PresentationLayer.LibraryModel;
 
 namespace PresentationLayer.LibraryViewModel
@@ -16,6 +16,8 @@ namespace PresentationLayer.LibraryViewModel
         private ObservableCollection<BookPresenter> b_Books = new ObservableCollection<BookPresenter>();
         private BookPresenter b_SelectedBook = null;
         private Nullable<DateTime> b_ReturnTime;
+        private bool BookBorrowOngoing = false;
+        private bool BookReturnOngoing = false;
 
         public ICommand OnBookReturn { get; set; }
         public ICommand OnBorrowBook { get; set; }
@@ -28,11 +30,10 @@ namespace PresentationLayer.LibraryViewModel
             OnBorrowBook = new CommandForwarder(() => BorrowBook());
 
             DataModel.OverdueWatcher.OverdueEvent += OnOverdueEvent;
+            DataModel.OnDataUpdated += DataUpdatedHandler;
+            DataModel.OnTransactionResult += OnTransactionResult;
 
-            foreach (ReaderPresenter reader in DataModel.GetReaders())
-            {
-                b_Readers.Add(reader);
-            }
+            RefreshReaders();
             RefreshAvailableBooks();
         }
 
@@ -103,6 +104,27 @@ namespace PresentationLayer.LibraryViewModel
             }
         }
 
+        private string b_TransactionResultInfo = "";
+        public string TransactionResultInfo
+        {
+            get { return b_TransactionResultInfo; }
+            set
+            {
+                b_TransactionResultInfo = value;
+                OnPropertyChanged("TransactionResultInfo");
+            }
+        }
+        private string b_TransactionResultColor = "White";
+        public string TransactionResultColor
+        {
+            get { return b_TransactionResultColor; }
+            set
+            {
+                b_TransactionResultColor = value;
+                OnPropertyChanged("TransactionResultColor");
+            }
+        }
+
         public Nullable<DateTime> ReturnTime
         {
             get { return b_ReturnTime; }
@@ -129,17 +151,7 @@ namespace PresentationLayer.LibraryViewModel
         public void BookReturn(Guid bookId)
         {
             DataModel.ReturnBook(bookId);
-            RefreshReaderLoans();
-            RefreshAvailableBooks();
-            foreach (LoanPresenter loan in b_OverdueLoans)
-            {
-                if (loan.BookId == bookId)
-                {
-                    b_OverdueLoans.Remove(loan);
-                    OnPropertyChanged("OverdueLoans");
-                    break;
-                }
-            }
+            BookReturnOngoing = true;
         }
 
         public void BorrowBook()
@@ -147,9 +159,7 @@ namespace PresentationLayer.LibraryViewModel
             if (b_SelectedBook != null && b_SelectedReader != null && b_ReturnTime.HasValue)
             {
                 DataModel.BorrowBook(b_SelectedReader.Id, b_SelectedBook.Id, b_ReturnTime.Value);
-                b_SelectedBook = null;
-                RefreshAvailableBooks();
-                RefreshReaderLoans();
+                BookBorrowOngoing = true;
             }
         }
 
@@ -157,23 +167,115 @@ namespace PresentationLayer.LibraryViewModel
         {
             if (b_SelectedReader != null)
             {
-                b_LoansOfReader.Clear();
+                ObservableCollection<LoanPresenter> loans = new ObservableCollection<LoanPresenter>();
+
                 foreach (LoanPresenter loan in DataModel.GetLoansByReader(b_SelectedReader.Id))
                 {
-                    b_LoansOfReader.Add(loan);
+                    loans.Add(loan);
                 }
+
+                b_LoansOfReader = loans;
                 OnPropertyChanged("ReaderLoans");
             }
         }
 
         private void RefreshAvailableBooks()
         {
-            b_Books.Clear();
+            ObservableCollection<BookPresenter> books = new ObservableCollection<BookPresenter>();
+
             foreach (BookPresenter book in DataModel.GetAvailableBooks())
             {
-                b_Books.Add(book);
+                books.Add(book);
             }
+
+            b_Books = books;
             OnPropertyChanged("AvailableBooks");
+        }
+
+        private void RefreshReaders()
+        {
+            ObservableCollection<ReaderPresenter> readers = new ObservableCollection<ReaderPresenter>();
+
+            foreach (ReaderPresenter reader in DataModel.GetReaders())
+            {
+                readers.Add(reader);
+            }
+
+            b_Readers = readers;
+            OnPropertyChanged("Readers");
+        }
+
+        private void DataUpdatedHandler(object sender, int args)
+        {
+            switch(args)
+            {
+                case 1:
+                    RefreshReaders();
+                    break;
+                case 2:
+                    RefreshAvailableBooks();
+                    RefreshReaderLoans();
+                    break;
+            }
+        }
+
+        private void OnTransactionResult(object sender, bool success)
+        {
+            if(success)
+            {
+                if(BookReturnOngoing)
+                {
+                    BookReturnOngoing = false;
+                    RefreshReaderLoans();
+                    RefreshAvailableBooks();
+                    ObservableCollection<LoanPresenter> overdueLoans = new ObservableCollection<LoanPresenter>(b_OverdueLoans);
+                    foreach (LoanPresenter loan in overdueLoans)
+                    {
+                        if (DataModel.GetAvailableBooks().Find(x => x.Id == loan.BookId) != null)
+                        {
+                            overdueLoans.Remove(loan);
+                            b_OverdueLoans = overdueLoans;
+                            OnPropertyChanged("OverdueLoans");
+                            break;
+                        }
+                    }
+
+                    TransactionResultInfo = "Book return success";
+                    TransactionResultColor = "LightGreen";
+                }
+                else if(BookBorrowOngoing)
+                {
+                    BookBorrowOngoing = false;
+                    b_SelectedBook = null;
+                    RefreshAvailableBooks();
+                    RefreshReaderLoans();
+
+                    TransactionResultInfo = "Book borrow success";
+                    TransactionResultColor = "LightGreen";
+                }
+            }
+            else
+            {
+                if(BookReturnOngoing)
+                {
+                    BookReturnOngoing = false;
+                    TransactionResultInfo = "Book return failed";
+                    TransactionResultColor = "Red";
+                }
+                else if(BookBorrowOngoing)
+                {
+                    BookBorrowOngoing = false;
+                    TransactionResultInfo = "Book borrow failed";
+                    TransactionResultColor = "Red";
+                }
+            }
+
+            System.Timers.Timer resultCloseTimer = new System.Timers.Timer(TimeSpan.FromSeconds(5).TotalMilliseconds)
+            {
+                AutoReset = false
+            };
+            resultCloseTimer.Elapsed += new ElapsedEventHandler((sender, args) => { TransactionResultInfo = ""; TransactionResultColor = "White"; });
+            resultCloseTimer.Start();
         }
     }
 }

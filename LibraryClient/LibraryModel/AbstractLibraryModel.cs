@@ -8,6 +8,8 @@ namespace PresentationLayer.LibraryModel
     {
         public OverdueReporter OverdueWatcher;
         protected IDisposable ObserverStopper;
+        public event EventHandler<bool> OnTransactionResult;
+        public event EventHandler<int> OnDataUpdated;
 
         public abstract List<ReaderPresenter> GetReaders();
         public abstract List<LoanPresenter> GetLoansByReader(Guid readerId);
@@ -24,6 +26,16 @@ namespace PresentationLayer.LibraryModel
         public static AbstractLibraryModel GetModel()
         {
             return new LibraryModel();
+        }
+
+        protected void DataUpdatedHandler(object sender, int args)
+        {
+            OnDataUpdated?.Invoke(this, args);
+        }
+
+        protected void HandleTransactionResult(object sender, bool arg)
+        {
+            OnTransactionResult?.Invoke(this, arg);
         }
     }
 }
