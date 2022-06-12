@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LibraryServer.ApplicationDataLayer
 {
-    public class Reader
+    public abstract class Reader
     {
         public string Name { get; set; }
         public uint Age { get; set; }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LibraryClient.LibraryClientLogic
 {
-    public class LoanDTO
+    public abstract class LoanDTO
     {
         public Guid Id { get; set; }
         public Guid BookId { get; set; }

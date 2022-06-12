@@ -24,7 +24,7 @@ namespace LibraryClient.LibraryClientData.Test
         public void TestGetReaders()
         {
             string readerName = "ReaderNameTest";
-            Reader testReader = new Reader { Id = Guid.NewGuid(), Name = readerName };
+            Reader testReader = new ReaderImplTest { Id = Guid.NewGuid(), Name = readerName };
             string readerMessage = "Readers\n1\n" + testReader.Id.ToString() + "\n" + testReader.Name + "\n";
             ((ClientData)Client).HandleMessage(readerMessage);
 
@@ -38,7 +38,7 @@ namespace LibraryClient.LibraryClientData.Test
         {
             Guid bookId = Guid.NewGuid();
             string bookTitle = "BookTitleTest";
-            Book testBook = new Book { Id = bookId, Title = bookTitle, Author = "Author" };
+            Book testBook = new BookImplTest { Id = bookId, Title = bookTitle, Author = "Author" };
             string bookMessage = "Books\n1\n" + testBook.Id.ToString() + "\n" + testBook.Title + "\n" + testBook.Author + "\n";
             ((ClientData)Client).HandleMessage(bookMessage);
 
@@ -52,7 +52,7 @@ namespace LibraryClient.LibraryClientData.Test
         {
             Guid bookId = Guid.NewGuid();
             Guid loanId = Guid.NewGuid();
-            Loan testLoan = new Loan { Id = loanId, BookId = bookId, ReaderId = Guid.NewGuid(), BorrowDate = new DateTime(), ReturnDate = new DateTime() };
+            Loan testLoan = new LoanImplTest { Id = loanId, BookId = bookId, ReaderId = Guid.NewGuid(), BorrowDate = new DateTime(), ReturnDate = new DateTime() };
             string loanMessage = "Loans\n1\n" + testLoan.Id.ToString() + "\n" + testLoan.BookId.ToString() + "\n" + testLoan.ReaderId.ToString() + "\n" + testLoan.BorrowDate.ToString() + "\n" + testLoan.ReturnDate.ToString() + "\n";
             ((ClientData)Client).HandleMessage(loanMessage);
 
@@ -60,5 +60,20 @@ namespace LibraryClient.LibraryClientData.Test
             Assert.IsNotNull(loanCheck);
             Assert.AreEqual(loanCheck.BookId, bookId);
         }
+    }
+
+    class BookImplTest: Book
+    {
+
+    }
+
+    class ReaderImplTest: Reader
+    {
+
+    }
+
+    class LoanImplTest: Loan
+    {
+
     }
 }

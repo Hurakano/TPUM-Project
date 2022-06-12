@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PresentationLayer.LibraryModel
 {
-    public class LoanPresenter
+    public abstract class LoanPresenter
     {
         public string BookTitle { get; set; }
         public Guid BookId { get; private set; }

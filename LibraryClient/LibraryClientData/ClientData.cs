@@ -189,7 +189,7 @@ namespace LibraryClient.LibraryClientData
                 string title = reader.ReadLine();
                 string author = reader.ReadLine();
 
-                books.Add(new Book { Id = id, Title = title, Author = author });
+                books.Add(new BookImpl { Id = id, Title = title, Author = author });
             }
 
             return books;
@@ -205,7 +205,7 @@ namespace LibraryClient.LibraryClientData
                 Guid id = Guid.Parse(reader.ReadLine());
                 string name = reader.ReadLine();
 
-                readers.Add(new Reader { Id = id, Name = name });
+                readers.Add(new ReaderImpl { Id = id, Name = name });
             }
 
             return readers;
@@ -224,7 +224,7 @@ namespace LibraryClient.LibraryClientData
                 DateTime borrowDate = DateTime.Parse(reader.ReadLine());
                 DateTime returnDate = DateTime.Parse(reader.ReadLine());
 
-                loans.Add(new Loan { Id = id, BookId = bookId, ReaderId = readerId, BorrowDate = borrowDate, ReturnDate = returnDate});
+                loans.Add(new LoanImpl { Id = id, BookId = bookId, ReaderId = readerId, BorrowDate = borrowDate, ReturnDate = returnDate});
             }
 
             return loans;

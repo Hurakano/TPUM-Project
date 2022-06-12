@@ -17,11 +17,9 @@ namespace LibraryServer.ApplicationDataLayer.Test
             string bookAuthor1 = "Author1";
             string bookAuthor2 = "Author2";
             DateTime bookDate = new DateTime(2010, 5, 5, 0, 0, 0);
-            Book book1 = new Book(bookTitle1, bookDate, bookAuthor1);
-            Book book2 = new Book(bookTitle2, new DateTime(2015, 1, 4, 0, 0, 0), bookAuthor2);
 
-            Guid bookId1 = repository.AddBook(book1);
-            Guid bookId2 = repository.AddBook(book2);
+            Guid bookId1 = repository.AddBook(bookTitle1, bookDate, bookAuthor1);
+            Guid bookId2 = repository.AddBook(bookTitle2, new DateTime(2015, 1, 4, 0, 0, 0), bookAuthor2);
 
             Dictionary<Guid, Book> booksIn = repository.GetBooks();
             Assert.AreEqual(booksIn.Count, 2);
@@ -34,33 +32,13 @@ namespace LibraryServer.ApplicationDataLayer.Test
         }
 
         [TestMethod]
-        public void TestUpdateBook()
-        {
-            ILibraryData repository = new ApplicationDataLayer.LibraryRepository();
-            Book book1 = new Book("Title1", new DateTime(2010, 5, 5, 0, 0, 0), "Author1");
-            Book book2 = new Book("Title2", new DateTime(2015, 1, 4, 0, 0, 0), "Author2");
-
-            repository.AddBook(book1);
-            Guid bookId2 = repository.AddBook(book2);
-
-            string titleUpdate = "Updated title";
-            book2.Title = titleUpdate;
-            repository.UpdateBook(bookId2, book2);
-
-            Book bookCheck = repository.GetBook(bookId2);
-            Assert.AreEqual(bookCheck.Title, titleUpdate);
-        }
-
-        [TestMethod]
         public void TestRemoveBook()
         {
             ILibraryData repository = new ApplicationDataLayer.LibraryRepository();
             string bookAuthor2 = "Author2";
-            Book book1 = new Book("Title1", new DateTime(2010, 5, 5, 0, 0, 0), "Author1");
-            Book book2 = new Book("Title2", new DateTime(2015, 1, 4, 0, 0, 0), bookAuthor2);
 
-            Guid bookId1 = repository.AddBook(book1);
-            repository.AddBook(book2);
+            Guid bookId1 = repository.AddBook("Title1", new DateTime(2010, 5, 5, 0, 0, 0), "Author1");
+            repository.AddBook("Title2", new DateTime(2015, 1, 4, 0, 0, 0), bookAuthor2);
 
             repository.RemoveBook(bookId1);
 
@@ -79,11 +57,9 @@ namespace LibraryServer.ApplicationDataLayer.Test
             uint age2 = 50;
             string address1 = "Address1";
             string address2 = "Address2";
-            Reader reader1 = new Reader(name1, age1, address1);
-            Reader reader2 = new Reader(name2, age2, address2);
 
-            Guid readerId1 = repository.AddReader(reader1);
-            Guid readerId2 = repository.AddReader(reader2);
+            Guid readerId1 = repository.AddReader(name1, age1, address1);
+            Guid readerId2 = repository.AddReader(name2, age2, address2);
 
             Dictionary<Guid, Reader> readers = repository.GetReaders();
             Assert.AreEqual(readers.Count, 2);
@@ -96,33 +72,13 @@ namespace LibraryServer.ApplicationDataLayer.Test
         }
 
         [TestMethod]
-        public void TestUpdateReader()
-        {
-            ILibraryData repository = new ApplicationDataLayer.LibraryRepository();
-            Reader reader1 = new Reader("Name1", 20, "Address1");
-            Reader reader2 = new Reader("Name2", 30, "Address2");
-
-            repository.AddReader(reader1);
-            Guid readerId2 = repository.AddReader(reader2);
-
-            string updateAddress = "Updated address";
-            reader2.Address = updateAddress;
-            repository.UpdateReader(readerId2, reader2);
-
-            Reader readerCheck = repository.GetReader(readerId2);
-            Assert.AreEqual(readerCheck.Address, updateAddress);
-        }
-
-        [TestMethod]
         public void TestRemoveReader()
         {
             ILibraryData repository = new ApplicationDataLayer.LibraryRepository();
             string readerName2 = "Name2";
-            Reader reader1 = new Reader("Name1", 20, "Address1");
-            Reader reader2 = new Reader(readerName2, 30, "Address2");
 
-            Guid readerId1 = repository.AddReader(reader1);
-            repository.AddReader(reader2);
+            Guid readerId1 = repository.AddReader("Name1", 20, "Address1");
+            repository.AddReader(readerName2, 30, "Address2");
 
             repository.RemoveReader(readerId1);
 
@@ -135,16 +91,13 @@ namespace LibraryServer.ApplicationDataLayer.Test
         public void TestAddLoan()
         {
             ILibraryData repository = new ApplicationDataLayer.LibraryRepository();
-            Book book = new Book("Title", new DateTime(2000), "Author");
-            Reader reader = new Reader("Name", 20, "Address");
 
-            Guid bookId = repository.AddBook(book);
-            Guid readerId = repository.AddReader(reader);
+            Guid bookId = repository.AddBook("Title", new DateTime(2000), "Author");
+            Guid readerId = repository.AddReader("Name", 20, "Address");
 
             DateTime date1 = new DateTime(2005);
             DateTime date2 = new DateTime(2010);
-            Loan loan = new Loan(bookId, readerId, date1, date2);
-            Guid loanId = repository.AddLoan(loan);
+            Guid loanId = repository.AddLoan(bookId, readerId, date1, date2);
 
             Dictionary<Guid, Loan> loans = repository.GetLoans();
             Assert.AreEqual(loans.Count, 1);
@@ -155,38 +108,14 @@ namespace LibraryServer.ApplicationDataLayer.Test
         }
 
         [TestMethod]
-        public void TestUpdateLoan()
-        {
-            ILibraryData repository = new ApplicationDataLayer.LibraryRepository();
-            Book book = new Book("Title", new DateTime(2000), "Author");
-            Reader reader = new Reader("Name", 20, "Address");
-
-            Guid bookId = repository.AddBook(book);
-            Guid readerId = repository.AddReader(reader);
-
-            Loan loan = new Loan(bookId, readerId, new DateTime(2005), new DateTime(2010));
-            Guid loanId = repository.AddLoan(loan);
-
-            DateTime newDate = new DateTime(2020);
-            loan.ReturnDate = newDate;
-            repository.UpdateLoan(loanId, loan);
-
-            Loan loanCheck = repository.GetLoan(loanId);
-            Assert.AreEqual(loanCheck.ReturnDate, newDate);
-        }
-
-        [TestMethod]
         public void TestRemoveLoan()
         {
             ILibraryData repository = new ApplicationDataLayer.LibraryRepository();
-            Book book = new Book("Title", new DateTime(2000), "Author");
-            Reader reader = new Reader("Name", 20, "Address");
 
-            Guid bookId = repository.AddBook(book);
-            Guid readerId = repository.AddReader(reader);
+            Guid bookId = repository.AddBook("Title", new DateTime(2000), "Author");
+            Guid readerId = repository.AddReader("Name", 20, "Address");
 
-            Loan loan = new Loan(bookId, readerId, new DateTime(2005), new DateTime(2010));
-            Guid loanId = repository.AddLoan(loan);
+            Guid loanId = repository.AddLoan(bookId, readerId, new DateTime(2005), new DateTime(2010));
 
             Loan loanCheck = repository.GetLoan(loanId);
             Assert.IsNotNull(loanCheck);

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LibraryServer.ApplicationDataLayer
 {
-    public class Book
+    public abstract class Book
     {
         public string Title { get; set; }
         public DateTime PublicationDate { get; set; }

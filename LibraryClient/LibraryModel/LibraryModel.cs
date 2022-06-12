@@ -28,7 +28,7 @@ namespace PresentationLayer.LibraryModel
 
             foreach(ReaderDTO reader in Library.GetAllReaders())
             {
-                readers.Add(new ReaderPresenter(reader.Id, reader.Name));
+                readers.Add(new ReaderPresenterImpl(reader.Id, reader.Name));
             }
 
             return readers;
@@ -39,7 +39,7 @@ namespace PresentationLayer.LibraryModel
             List<LoanPresenter> presentLoans = new List<LoanPresenter>();
             foreach (LoanDTO loan in Library.GetAllLoansByReader(readerId))
             {
-                presentLoans.Add(new LoanPresenter(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(readerId).Name, loan.BookId, loan.ReaderId, loan.ReturnDate));
+                presentLoans.Add(new LoanPresenterImpl(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(readerId).Name, loan.BookId, loan.ReaderId, loan.ReturnDate));
             }
 
             return presentLoans;
@@ -48,7 +48,7 @@ namespace PresentationLayer.LibraryModel
         public override LoanPresenter GetLoanById(Guid loanId)
         {
             LoanDTO loan = Library.GetLoanById(loanId);
-            return new LoanPresenter(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(loan.ReaderId).Name, loan.BookId, loan.ReaderId, loan.ReturnDate);
+            return new LoanPresenterImpl(Library.GetBookById(loan.BookId).Title, Library.GetReaderById(loan.ReaderId).Name, loan.BookId, loan.ReaderId, loan.ReturnDate);
         }
 
         public override List<BookPresenter> GetAvailableBooks()
@@ -56,7 +56,7 @@ namespace PresentationLayer.LibraryModel
             List<BookPresenter> books = new List<BookPresenter>();
             foreach(BookDTO book in Library.GetAvailableBooks())
             {
-                books.Add(new BookPresenter(book.Id, book.Title, book.Author));
+                books.Add(new BookPresenterImpl(book.Id, book.Title, book.Author));
             }
 
             return books;

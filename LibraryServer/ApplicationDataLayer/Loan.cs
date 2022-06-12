@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LibraryServer.ApplicationDataLayer
 {
-    public class Loan
+    public abstract class Loan
     {
         public Guid BookId;
         public Guid ReaderId;

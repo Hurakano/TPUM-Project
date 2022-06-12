@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PresentationLayer.LibraryModel
 {
-    public class ReaderPresenter
+    public abstract class ReaderPresenter
     {
         public Guid Id { get; private set; }
         public string Name { get; set; }

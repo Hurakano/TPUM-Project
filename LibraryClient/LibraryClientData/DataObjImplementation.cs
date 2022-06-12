@@ -4,9 +4,18 @@ using System.Text;
 
 namespace LibraryClient.LibraryClientData
 {
-    public abstract class Reader
+    class BookImpl: Book
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+
+    }
+
+    class ReaderImpl: Reader
+    {
+
+    }
+
+    class LoanImpl: Loan
+    {
+
     }
 }

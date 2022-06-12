@@ -20,26 +20,11 @@ namespace LibraryServer.BusinessLogicLayer.Test
         }
 
         [TestMethod]
-        public void TestAddMethods()
-        {
-            string title = "Title";
-            string name = "Name";
-            BookDTO book = new BookDTO { Title = title, Author = "Author" };
-            ReaderDTO reader = new ReaderDTO { Name = name };
-
-            Logic.AddNewBook(book);
-            Logic.AddNewReader(reader);
-            
-            DataMock.Verify(p => p.AddBook(It.Is<Book>(obj => obj.Title == title)), Times.Once());
-            DataMock.Verify(p => p.AddReader(It.Is<Reader>(obj => obj.Name == name)), Times.Once());
-        }
-
-        [TestMethod]
         public void TestRemoveMethods()
         {
             Guid testId = new Guid();
             DataMock.Setup(p => p.GetLoans()).Returns(new Dictionary<Guid, Loan>());
-            Loan loan = new Loan(new Guid(), new Guid(), new DateTime(), new DateTime());
+            Loan loan = new LoanImplTest(new Guid(), new Guid(), new DateTime(), new DateTime());
             DataMock.Setup(p => p.GetLoan(testId)).Returns(loan);
 
             Logic.RemoveBookById(testId);
@@ -57,7 +42,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
             Guid bookId = Guid.NewGuid();
             Guid readerId = Guid.NewGuid();
             Guid loanId = Guid.NewGuid();
-            Loan loan = new Loan(bookId, readerId, new DateTime(), new DateTime());
+            Loan loan = new LoanImplTest(bookId, readerId, new DateTime(), new DateTime());
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan> { { loanId, loan } };
             DataMock.Setup(p => p.GetLoans()).Returns(loans);
 
@@ -76,7 +61,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
         {
             Guid testId = Guid.NewGuid();
             string title = "MyTitle";
-            DataMock.Setup(p => p.GetBook(testId)).Returns(new Book(title, new DateTime(2010, 2, 2, 0, 0, 0), "MyAuthor"));
+            DataMock.Setup(p => p.GetBook(testId)).Returns(new BookImplTest(title, new DateTime(2010, 2, 2, 0, 0, 0), "MyAuthor"));
             BookDTO bookCheck = Logic.GetBookById(testId);
             Assert.AreEqual(bookCheck.Title, title);
         }
@@ -85,8 +70,8 @@ namespace LibraryServer.BusinessLogicLayer.Test
         public void TestGetBookByTitle()
         {
             string myTitle = "MyTitle";
-            Book book1 = new Book("OtherTitle", new DateTime(), "Author1");
-            Book book2 = new Book(myTitle, new DateTime(), "Authore2");
+            Book book1 = new BookImplTest("OtherTitle", new DateTime(), "Author1");
+            Book book2 = new BookImplTest(myTitle, new DateTime(), "Authore2");
             Dictionary<Guid, Book> books = new Dictionary<Guid, Book>
             {
                 { Guid.NewGuid(), book1 },
@@ -102,7 +87,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
         [TestMethod]
         public void TestGetAllBooks()
         {
-            Book testBook = new Book("Title", new DateTime(), "Author");
+            Book testBook = new BookImplTest("Title", new DateTime(), "Author");
             Dictionary<Guid, Book> books = new Dictionary<Guid, Book>();
             int bookCount = 10;
             for (int i = 0; i < bookCount; i++)
@@ -118,14 +103,14 @@ namespace LibraryServer.BusinessLogicLayer.Test
         public void TestGetAvailableBooks()
         {
             Guid loanedBookId = Guid.NewGuid();
-            Book testBook = new Book("Title", new DateTime(), "Author");
+            Book testBook = new BookImplTest("Title", new DateTime(), "Author");
             Dictionary<Guid, Book> books = new Dictionary<Guid, Book>()
             {
                 { Guid.NewGuid(), testBook },
                 { loanedBookId, testBook },
                 { Guid.NewGuid(), testBook }
             };
-            Loan loan = new Loan(loanedBookId, Guid.NewGuid(), new DateTime(), new DateTime());
+            Loan loan = new LoanImplTest(loanedBookId, Guid.NewGuid(), new DateTime(), new DateTime());
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan> { { Guid.NewGuid(), loan } };
             DataMock.Setup(p => p.GetBooks()).Returns(books);
             DataMock.Setup(p => p.GetLoans()).Returns(loans);
@@ -141,14 +126,14 @@ namespace LibraryServer.BusinessLogicLayer.Test
         {
             Guid freeBookId = Guid.NewGuid();
             Guid loanedBookId = Guid.NewGuid();
-            Book testBook = new Book("Title", new DateTime(), "Author");
+            Book testBook = new BookImplTest("Title", new DateTime(), "Author");
             Dictionary<Guid, Book> books = new Dictionary<Guid, Book>()
             {
                 { Guid.NewGuid(), testBook },
                 { loanedBookId, testBook },
                 { freeBookId, testBook }
             };
-            Loan loan = new Loan(loanedBookId, Guid.NewGuid(), new DateTime(), new DateTime());
+            Loan loan = new LoanImplTest(loanedBookId, Guid.NewGuid(), new DateTime(), new DateTime());
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan> { { Guid.NewGuid(), loan } };
             DataMock.Setup(p => p.GetBooks()).Returns(books);
             DataMock.Setup(p => p.GetLoans()).Returns(loans);
@@ -163,7 +148,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
         {
             Guid testId = Guid.NewGuid();
             string name = "MyName";
-            DataMock.Setup(p => p.GetReader(testId)).Returns(new Reader(name, 20, "Address"));
+            DataMock.Setup(p => p.GetReader(testId)).Returns(new ReaderImplTest(name, 20, "Address"));
             ReaderDTO readerCheck = Logic.GetReaderById(testId);
             Assert.AreEqual(readerCheck.Name, name);
         }
@@ -172,8 +157,8 @@ namespace LibraryServer.BusinessLogicLayer.Test
         public void TestGetReaderByName()
         {
             string myName = "MyName";
-            Reader reader1 = new Reader("OtherName", 20, "Address1");
-            Reader reader2 = new Reader(myName, 20, "Address2");
+            Reader reader1 = new ReaderImplTest("OtherName", 20, "Address1");
+            Reader reader2 = new ReaderImplTest(myName, 20, "Address2");
             Dictionary<Guid, Reader> readers = new Dictionary<Guid, Reader>
             {
                 { Guid.NewGuid(), reader1 },
@@ -189,7 +174,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
         [TestMethod]
         public void TestGetAllReaders()
         {
-            Reader testReader = new Reader("Name", 20, "Address");
+            Reader testReader = new ReaderImplTest("Name", 20, "Address");
             Dictionary<Guid, Reader> readers = new Dictionary<Guid, Reader>();
             int readerCount = 10;
             for (int i = 0; i < readerCount; i++)
@@ -208,18 +193,15 @@ namespace LibraryServer.BusinessLogicLayer.Test
             Guid readerId = Guid.NewGuid();
             DateTime dateStart = new DateTime(2020);
             DateTime dateEnd = new DateTime(2021);
-            Book book = new Book("Title", new DateTime(), "Author");
-            Reader reader = new Reader("Name", 20, "Address");
+            Book book = new BookImplTest("Title", new DateTime(), "Author");
+            Reader reader = new ReaderImplTest("Name", 20, "Address");
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan>();
             DataMock.Setup(p => p.GetBook(bookId)).Returns(book);
             DataMock.Setup(p => p.GetReader(readerId)).Returns(reader);
             DataMock.Setup(p => p.GetLoans()).Returns(loans);
 
             Logic.LoanBook(readerId, bookId, dateStart, dateEnd);
-            DataMock.Verify(p => p.AddLoan(It.Is<Loan>(l => l.ReaderId == readerId &&
-                                                            l.BookId == bookId &&
-                                                            l.BorrowDate == dateStart &&
-                                                            l.ReturnDate == dateEnd)), Times.Once());
+            DataMock.Verify(p => p.AddLoan(bookId, readerId, dateStart, dateEnd), Times.Once());
         }
 
         [TestMethod]
@@ -228,9 +210,9 @@ namespace LibraryServer.BusinessLogicLayer.Test
             Guid bookId = Guid.NewGuid();
             Guid readerId = Guid.NewGuid();
             Guid inegsistingId = Guid.NewGuid();
-            Book book = new Book("Title", new DateTime(), "Author");
-            Reader reader = new Reader("Name", 20, "Address");
-            Loan loan = new Loan(bookId, readerId, new DateTime(), new DateTime());
+            Book book = new BookImplTest("Title", new DateTime(), "Author");
+            Reader reader = new ReaderImplTest("Name", 20, "Address");
+            Loan loan = new LoanImplTest(bookId, readerId, new DateTime(), new DateTime());
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan>();
             DataMock.Setup(p => p.GetBook(bookId)).Returns(book);
             DataMock.Setup(p => p.GetBook(It.Is<Guid>(g => g != bookId))).Returns(null as Book);
@@ -243,7 +225,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
             loans.Add(Guid.NewGuid(), loan);
             Logic.LoanBook(readerId, bookId, new DateTime(), new DateTime());
 
-            DataMock.Verify(p => p.AddLoan(It.IsAny<Loan>()), Times.Never());
+            DataMock.Verify(p => p.AddLoan(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Never());
         }
 
         [TestMethod]
@@ -252,7 +234,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
             Guid bookId = Guid.NewGuid();
             Guid readerId = Guid.NewGuid();
             Guid loanId = Guid.NewGuid();
-            Loan loan = new Loan(bookId, readerId, new DateTime(), new DateTime());
+            Loan loan = new LoanImplTest(bookId, readerId, new DateTime(), new DateTime());
             DataMock.Setup(p => p.GetLoan(loanId)).Returns(loan);
 
             LoanDTO loanCheck = Logic.GetLoanById(loanId);
@@ -264,7 +246,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
         [TestMethod]
         public void TestGetAllLoans()
         {
-            Loan testLoan = new Loan(Guid.NewGuid(), Guid.NewGuid(), new DateTime(), new DateTime());
+            Loan testLoan = new LoanImplTest(Guid.NewGuid(), Guid.NewGuid(), new DateTime(), new DateTime());
             int loanCount = 10;
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan>();
             for(int i = 0; i < loanCount; i++)
@@ -282,8 +264,8 @@ namespace LibraryServer.BusinessLogicLayer.Test
         {
             Guid readerId = Guid.NewGuid();
             Guid otherReader = Guid.NewGuid();
-            Loan loanWithReader = new Loan(Guid.NewGuid(), readerId, new DateTime(), new DateTime());
-            Loan loanWithAnotherReader = new Loan(Guid.NewGuid(), otherReader, new DateTime(), new DateTime());
+            Loan loanWithReader = new LoanImplTest(Guid.NewGuid(), readerId, new DateTime(), new DateTime());
+            Loan loanWithAnotherReader = new LoanImplTest(Guid.NewGuid(), otherReader, new DateTime(), new DateTime());
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan>
             {
                 {Guid.NewGuid(), loanWithReader },
@@ -301,8 +283,8 @@ namespace LibraryServer.BusinessLogicLayer.Test
         {
             Guid bookId = Guid.NewGuid();
             Guid otherBookId = Guid.NewGuid();
-            Loan loanWithBook = new Loan(bookId, Guid.NewGuid(), new DateTime(), new DateTime());
-            Loan loanWithOtherBook = new Loan(otherBookId, Guid.NewGuid(), new DateTime(), new DateTime());
+            Loan loanWithBook = new LoanImplTest(bookId, Guid.NewGuid(), new DateTime(), new DateTime());
+            Loan loanWithOtherBook = new LoanImplTest(otherBookId, Guid.NewGuid(), new DateTime(), new DateTime());
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan>
             {
                 {Guid.NewGuid(), loanWithOtherBook },
@@ -322,7 +304,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
             int startYear = 2000;
             for (int i = 0; i < 5; i++)
             {
-                Loan loan = new Loan(Guid.NewGuid(), Guid.NewGuid(), new DateTime(startYear + i), new DateTime(2010));
+                Loan loan = new LoanImplTest(Guid.NewGuid(), Guid.NewGuid(), new DateTime(startYear + i), new DateTime(2010));
                 loans.Add(Guid.NewGuid(), loan);
             }
             DataMock.Setup(p => p.GetLoans()).Returns(loans);
@@ -342,7 +324,7 @@ namespace LibraryServer.BusinessLogicLayer.Test
             int startYear = 2010;
             for (int i = 0; i < 5; i++)
             {
-                Loan loan = new Loan(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2000), new DateTime(startYear + i));
+                Loan loan = new LoanImplTest(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2000), new DateTime(startYear + i));
                 loans.Add(Guid.NewGuid(), loan);
             }
             DataMock.Setup(p => p.GetLoans()).Returns(loans);
@@ -379,9 +361,9 @@ namespace LibraryServer.BusinessLogicLayer.Test
         {
             Dictionary<Guid, Loan> loans = new Dictionary<Guid, Loan>();
             DateTime currentDate = DateTime.Now;
-            Loan loan = new Loan(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2000), currentDate.AddDays(-2));
+            Loan loan = new LoanImplTest(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2000), currentDate.AddDays(-2));
             loans.Add(Guid.NewGuid(), loan);
-            loan = new Loan(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2000), currentDate.AddDays(2));
+            loan = new LoanImplTest(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2000), currentDate.AddDays(2));
             loans.Add(Guid.NewGuid(), loan);
             DataMock.Setup(p => p.GetLoans()).Returns(loans);
 
@@ -392,6 +374,30 @@ namespace LibraryServer.BusinessLogicLayer.Test
             myLogic.CheckForOverdueLoans(null, null);
 
             Assert.AreEqual(observer.ReceivedEvents.Count, 1);
+        }
+    }
+
+    class BookImplTest: Book
+    {
+        public BookImplTest(string _title, DateTime _publicationDate, string _author): base(_title, _publicationDate, _author)
+        {
+
+        }
+    }
+
+    class ReaderImplTest: Reader
+    {
+        public ReaderImplTest(string _name, uint _age, string _address): base(_name, _age, _address)
+        {
+
+        }
+    }
+
+    class LoanImplTest: Loan
+    {
+        public LoanImplTest(Guid _bookId, Guid _readerId, DateTime _borrowDate, DateTime _returnDate): base(_bookId, _readerId, _borrowDate, _returnDate)
+        {
+
         }
     }
 }

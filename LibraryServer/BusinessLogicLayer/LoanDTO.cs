@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LibraryServer.BusinessLogicLayer
 {
-    public class LoanDTO
+    public abstract class LoanDTO
     {
         public Guid Id { get; set; }
         public Guid BookId { get; set; }

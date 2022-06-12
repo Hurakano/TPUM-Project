@@ -13,10 +13,10 @@ namespace LibraryServer.ApplicationDataLayer
             filler.FillData(this);
         }
 
-        public Guid AddBook(Book book)
+        public Guid AddBook(string _title, DateTime _publicationDate, string _author)
         {
             Guid id = Guid.NewGuid();
-            RepoData.Books.Add(id, book);
+            RepoData.Books.Add(id, new BookImpl(_title, _publicationDate, _author));
             return id;
         }
 
@@ -38,10 +38,10 @@ namespace LibraryServer.ApplicationDataLayer
 
         public void RemoveBook(Guid id) { RepoData.Books.Remove(id); }
 
-        public Guid AddReader(Reader reader)
+        public Guid AddReader(string _name, uint _age, string _address)
         {
             Guid id = Guid.NewGuid();
-            RepoData.Readers.Add(id, reader);
+            RepoData.Readers.Add(id, new ReaderImpl(_name, _age, _address));
             return id;
         }
 
@@ -63,10 +63,10 @@ namespace LibraryServer.ApplicationDataLayer
 
         public void RemoveReader(Guid id) { RepoData.Readers.Remove(id); }
 
-        public Guid AddLoan(Loan loan)
+        public Guid AddLoan(Guid _bookId, Guid _readerId, DateTime _borrowDate, DateTime _returnDate)
         {
             Guid id = Guid.NewGuid();
-            RepoData.Loans.Add(id, loan);
+            RepoData.Loans.Add(id, new LoanImpl(_bookId, _readerId, _borrowDate, _returnDate));
             return id;
 
         }

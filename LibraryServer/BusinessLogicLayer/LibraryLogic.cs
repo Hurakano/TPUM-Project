@@ -33,7 +33,7 @@ namespace LibraryServer.BusinessLogicLayer
             DataLock.EnterWriteLock();
             try
             {
-                DataRepository.AddBook(new Book(book.Title, new DateTime(), book.Author));
+                DataRepository.AddBook(book.Title, new DateTime(), book.Author);
             }
             finally
             {
@@ -79,7 +79,7 @@ namespace LibraryServer.BusinessLogicLayer
             }
 
             if (book != null)
-                return new BookDTO { Id = id, Title = book.Title, Author = book.Author };
+                return new BookDTOImpl { Id = id, Title = book.Title, Author = book.Author };
             else
                 return null;
 
@@ -95,7 +95,7 @@ namespace LibraryServer.BusinessLogicLayer
                 {
                     if (x.Value.Title == title)
                     {
-                        book = new BookDTO() { Id = x.Key, Title = x.Value.Title, Author = x.Value.Author };
+                        book = new BookDTOImpl() { Id = x.Key, Title = x.Value.Title, Author = x.Value.Author };
                         break;
                     }
                 }
@@ -116,7 +116,7 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 foreach (KeyValuePair<Guid, Book> x in DataRepository.GetBooks())
                 {
-                    bookList.Add(new BookDTO { Id = x.Key, Title = x.Value.Title, Author = x.Value.Author });
+                    bookList.Add(new BookDTOImpl { Id = x.Key, Title = x.Value.Title, Author = x.Value.Author });
                 }
             }
             finally
@@ -136,7 +136,7 @@ namespace LibraryServer.BusinessLogicLayer
                 foreach (KeyValuePair<Guid, Book> x in DataRepository.GetBooks())
                 {
                     if (!IsBookLoanedNoLock(x.Key))
-                        bookList.Add(new BookDTO { Id = x.Key, Title = x.Value.Title, Author = x.Value.Author });
+                        bookList.Add(new BookDTOImpl { Id = x.Key, Title = x.Value.Title, Author = x.Value.Author });
                 }
             }
             finally
@@ -173,7 +173,7 @@ namespace LibraryServer.BusinessLogicLayer
             DataLock.EnterWriteLock();
             try
             {
-                DataRepository.AddReader(new Reader(reader.Name, 0, ""));
+                DataRepository.AddReader(reader.Name, 0, "");
             }
             finally
             {
@@ -221,7 +221,7 @@ namespace LibraryServer.BusinessLogicLayer
             }
 
             if (reader != null)
-                return new ReaderDTO { Id = id, Name = reader.Name };
+                return new ReaderDTOImpl { Id = id, Name = reader.Name };
             else
                 return null;
         }
@@ -235,7 +235,7 @@ namespace LibraryServer.BusinessLogicLayer
                 foreach (KeyValuePair<Guid, Reader> x in DataRepository.GetReaders())
                 {
                     if (x.Value.Name == name)
-                        reader = new ReaderDTO { Id = x.Key, Name = x.Value.Name };
+                        reader = new ReaderDTOImpl { Id = x.Key, Name = x.Value.Name };
                 }
             }
             finally
@@ -254,7 +254,7 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 foreach (KeyValuePair<Guid, Reader> x in DataRepository.GetReaders())
                 {
-                    readerList.Add(new ReaderDTO { Id = x.Key, Name = x.Value.Name });
+                    readerList.Add(new ReaderDTOImpl { Id = x.Key, Name = x.Value.Name });
                 }
             }
             finally
@@ -276,7 +276,7 @@ namespace LibraryServer.BusinessLogicLayer
                 Reader reader = DataRepository.GetReader(readerId);
                 if (book != null && reader != null && !IsBookLoanedNoLock(bookId))
                 {
-                    DataRepository.AddLoan(new Loan(bookId, readerId, now, returnDate));
+                    DataRepository.AddLoan(bookId, readerId, now, returnDate);
                     success = true;
                 }
             }
@@ -330,7 +330,7 @@ namespace LibraryServer.BusinessLogicLayer
             }
 
             if (loan != null)
-                return new LoanDTO { Id = id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate };
+                return new LoanDTOImpl { Id = id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate };
             else
                 return null;
         }
@@ -370,7 +370,7 @@ namespace LibraryServer.BusinessLogicLayer
             {
                 foreach (KeyValuePair<Guid, Loan> x in DataRepository.GetLoans())
                 {
-                    loanList.Add(new LoanDTO
+                    loanList.Add(new LoanDTOImpl
                     {
                         Id = x.Key,
                         BookId = x.Value.BookId,
@@ -410,7 +410,7 @@ namespace LibraryServer.BusinessLogicLayer
             foreach (KeyValuePair<Guid, Loan> x in DataRepository.GetLoans())
             {
                 if (x.Value.ReaderId == readerId)
-                    loanList.Add(new LoanDTO
+                    loanList.Add(new LoanDTOImpl
                     {
                         Id = x.Key,
                         BookId = x.Value.BookId,
@@ -443,7 +443,7 @@ namespace LibraryServer.BusinessLogicLayer
             foreach (KeyValuePair<Guid, Loan> x in DataRepository.GetLoans())
             {
                 if (x.Value.BookId == bookId)
-                    return new LoanDTO
+                    return new LoanDTOImpl
                     {
                         Id = x.Key,
                         BookId = x.Value.BookId,
@@ -464,7 +464,7 @@ namespace LibraryServer.BusinessLogicLayer
                 foreach (KeyValuePair<Guid, Loan> x in DataRepository.GetLoans())
                 {
                     if (x.Value.BorrowDate >= begin && x.Value.BorrowDate <= end)
-                        loanList.Add(new LoanDTO
+                        loanList.Add(new LoanDTOImpl
                         {
                             Id = x.Key,
                             BookId = x.Value.BookId,
@@ -491,7 +491,7 @@ namespace LibraryServer.BusinessLogicLayer
                 foreach (KeyValuePair<Guid, Loan> x in DataRepository.GetLoans())
                 {
                     if (x.Value.ReturnDate < currentDate)
-                        loanList.Add(new LoanDTO
+                        loanList.Add(new LoanDTOImpl
                         {
                             Id = x.Key,
                             BookId = x.Value.BookId,

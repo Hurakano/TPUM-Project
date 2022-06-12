@@ -45,7 +45,7 @@ namespace LibraryClient.LibraryClientLogic
             {
                 foreach (Loan loan in LibraryData.GetLoansByReader(readerId))
                 {
-                    loans.Add(new LoanDTO { Id = loan.Id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate });
+                    loans.Add(new LoanDTOImpl { Id = loan.Id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate });
                 }
             }
             finally
@@ -65,7 +65,7 @@ namespace LibraryClient.LibraryClientLogic
             {
                 foreach (Reader reader in LibraryData.GetReaders())
                 {
-                    readers.Add(new ReaderDTO { Id = reader.Id, Name = reader.Name });
+                    readers.Add(new ReaderDTOImpl { Id = reader.Id, Name = reader.Name });
                 }
             }
             finally
@@ -85,7 +85,7 @@ namespace LibraryClient.LibraryClientLogic
             {
                 foreach (Book book in LibraryData.GetAvailableBooks())
                 {
-                    books.Add(new BookDTO { Id = book.Id, Title = book.Title, Author = book.Author });
+                    books.Add(new BookDTOImpl { Id = book.Id, Title = book.Title, Author = book.Author });
                 }
             }
             finally
@@ -106,7 +106,7 @@ namespace LibraryClient.LibraryClientLogic
             {
                 book = LibraryData.GetBookById(id);
                 if (book != null)
-                    returnBook = new BookDTO { Id = book.Id, Title = book.Title, Author = book.Author };
+                    returnBook = new BookDTOImpl { Id = book.Id, Title = book.Title, Author = book.Author };
             }
             finally
             {
@@ -125,7 +125,7 @@ namespace LibraryClient.LibraryClientLogic
             {
                 Loan loan = LibraryData.GetLoanById(id);
                 if (loan != null)
-                    returnLoan = new LoanDTO { Id = loan.Id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate };
+                    returnLoan = new LoanDTOImpl { Id = loan.Id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate };
             }
             finally
             {
@@ -144,7 +144,7 @@ namespace LibraryClient.LibraryClientLogic
             {
                 Reader reader = LibraryData.GetReaderById(id);
                 if (reader != null)
-                    returnReader = new ReaderDTO { Id = reader.Id, Name = reader.Name };
+                    returnReader = new ReaderDTOImpl { Id = reader.Id, Name = reader.Name };
             }
             finally
             {
@@ -177,7 +177,7 @@ namespace LibraryClient.LibraryClientLogic
             List<LoanDTO> loansForward = new List<LoanDTO>();
             foreach (Loan loan in loans)
             {
-                loansForward.Add(new LoanDTO { Id = loan.Id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate });
+                loansForward.Add(new LoanDTOImpl { Id = loan.Id, BookId = loan.BookId, ReaderId = loan.ReaderId, BorrowDate = loan.BorrowDate, ReturnDate = loan.ReturnDate });
             }
 
             List<IObserver<List<LoanDTO>>> observers;
