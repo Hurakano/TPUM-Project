@@ -1,0 +1,13 @@
+<opc:TypeDictionary
+  xmlns:cas="http://cas.eu/UA/CommServer/"
+  xmlns:opc="http://opcfoundation.org/BinarySchema/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ua="http://opcfoundation.org/UA/"
+  xmlns:tns="http://libraryProject.com/TPUM-Project/"
+  DefaultByteOrder="LittleEndian"
+  TargetNamespace="http://libraryProject.com/TPUM-Project/"
+>
+  <opc:Import Namespace="http://cas.eu/UA/CommServer/" Location=".BinarySchema.bsd"/>
+  <opc:Import Namespace="http://opcfoundation.org/UA/" Location="Opc.Ua.BinarySchema.bsd"/>
+
+</opc:TypeDictionary>

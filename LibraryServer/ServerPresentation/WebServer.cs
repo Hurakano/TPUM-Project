@@ -7,32 +7,47 @@ using System.Net.WebSockets;
 
 namespace LibraryServer.ServerPresentation
 {
-    static class WebServer
+    public static class WebServer
     {
-        public static async Task Server(int port, Action<WebSocketConnection> onConnection)
+        private static HttpListener server = null;
+
+        public static async Task Server(int port, Action<WebSocketConnection> onConnection, CancellationToken token)
         {
             Uri uri = new Uri($"http://localhost:{port}/");
-            await ServerLoop(uri, onConnection);
+            await ServerLoop(uri, onConnection, token);
         }
 
-        public static async Task ServerLoop(Uri uri, Action<WebSocketConnection> onConnection)
+        public static async Task ServerLoop(Uri uri, Action<WebSocketConnection> onConnection, CancellationToken token)
         {
-            HttpListener server = new HttpListener();
+            server = new HttpListener();
             server.Prefixes.Add(uri.ToString());
             server.Start();
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                HttpListenerContext context = await server.GetContextAsync();
-                if(!context.Request.IsWebSocketRequest)
+                try
                 {
-                    context.Response.StatusCode = 400;
-                    context.Response.Close();
-                    continue;
+                    HttpListenerContext context = await server.GetContextAsync();
+                    if (!context.Request.IsWebSocketRequest)
+                    {
+                        context.Response.StatusCode = 400;
+                        context.Response.Close();
+                        continue;
+                    }
+                    HttpListenerWebSocketContext socketContext = await context.AcceptWebSocketAsync(null);
+                    WebSocketConnection socketConnection = new ServerWebSocketConnection(socketContext.WebSocket);
+                    onConnection?.Invoke(socketConnection);
                 }
-                HttpListenerWebSocketContext socketContext = await context.AcceptWebSocketAsync(null);
-                WebSocketConnection socketConnection = new ServerWebSocketConnection(socketContext.WebSocket);
-                onConnection?.Invoke(socketConnection);
+                catch
+                {
+                    break;
+                }
             }
+        }
+
+        public static void StopServer()
+        {
+            if (server != null)
+                server.Stop();
         }
     }
 

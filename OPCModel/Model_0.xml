@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<q1:ModelDesign xmlns:LibraryData="http://libraryProject.com/TPUM-Project/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cas="http://cas.eu/UA/CommServer/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/" TargetNamespace="http://libraryProject.com/TPUM-Project/" xmlns:q1="http://opcfoundation.org/UA/ModelDesign.xsd">
+  <q1:Namespaces>
+    <q1:Namespace Name="cas" XmlPrefix="cas">http://cas.eu/UA/CommServer/</q1:Namespace>
+    <q1:Namespace Name="OpcUa" Prefix="Opc.Ua" XmlNamespace="http://opcfoundation.org/UA/2008/02/Types.xsd">http://opcfoundation.org/UA/</q1:Namespace>
+    <q1:Namespace Name="LibraryData" Prefix="LibraryData" XmlPrefix="LibraryData">http://libraryProject.com/TPUM-Project/</q1:Namespace>
+  </q1:Namespaces>
+  <q1:ObjectType SymbolicName="LibraryData:Book" IsAbstract="true">
+    <q1:BrowseName>Book</q1:BrowseName>
+    <q1:Children>
+      <q1:Property SymbolicName="LibraryData:Id" DataType="Guid">
+        <q1:BrowseName>Id</q1:BrowseName>
+      </q1:Property>
+      <q1:Property SymbolicName="LibraryData:Title" DataType="String">
+        <q1:BrowseName>Title</q1:BrowseName>
+      </q1:Property>
+      <q1:Property SymbolicName="LibraryData:Author" DataType="String">
+        <q1:BrowseName>Author</q1:BrowseName>
+      </q1:Property>
+    </q1:Children>
+  </q1:ObjectType>
+  <q1:ObjectType SymbolicName="LibraryData:Reader" IsAbstract="true">
+    <q1:BrowseName>Reader</q1:BrowseName>
+    <q1:Children>
+      <q1:Property SymbolicName="LibraryData:Id" DataType="Guid">
+        <q1:BrowseName>Id</q1:BrowseName>
+      </q1:Property>
+      <q1:Property SymbolicName="LibraryData:Name" DataType="String">
+        <q1:BrowseName>Name</q1:BrowseName>
+      </q1:Property>
+    </q1:Children>
+  </q1:ObjectType>
+  <q1:ObjectType SymbolicName="LibraryData:Loan" IsAbstract="true">
+    <q1:BrowseName>Loan</q1:BrowseName>
+    <q1:Children>
+      <q1:Property SymbolicName="LibraryData:Id" DataType="Guid">
+        <q1:BrowseName>Id</q1:BrowseName>
+      </q1:Property>
+      <q1:Property SymbolicName="LibraryData:BookId" DataType="Guid">
+        <q1:BrowseName>BookId</q1:BrowseName>
+      </q1:Property>
+      <q1:Property SymbolicName="LibraryData:ReaderId" DataType="Guid">
+        <q1:BrowseName>ReaderId</q1:BrowseName>
+      </q1:Property>
+      <q1:Property SymbolicName="LibraryData:BorrowDate" DataType="DateTime">
+        <q1:BrowseName>BorrowDate</q1:BrowseName>
+      </q1:Property>
+      <q1:Property SymbolicName="LibraryData:ReturnDate" DataType="DateTime">
+        <q1:BrowseName>ReturnDate</q1:BrowseName>
+      </q1:Property>
+    </q1:Children>
+  </q1:ObjectType>
+</q1:ModelDesign>

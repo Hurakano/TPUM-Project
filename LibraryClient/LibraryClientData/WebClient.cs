@@ -22,6 +22,8 @@ namespace LibraryClient.LibraryClientData
             {
                 throw new Exception("Connecting socket failed");
             }
+
+            return;
         }
 
         private IClientWebSocket Socket;

@@ -24,6 +24,11 @@ namespace LibraryClient.LibraryClientData
             }
         }
 
+        public Task Dissconnect()
+        {
+            return WebSocket.DisconnectAsync();
+        }
+
         private List<Book> Books = new List<Book>();
         private List<Reader> Readers = new List<Reader>();
         private List<Loan> Loans = new List<Loan>();
@@ -33,6 +38,11 @@ namespace LibraryClient.LibraryClientData
         public ClientData(IClientWebSocket socketAdapter)
         {
             Task.Factory.StartNew(() => WebClient.Connect("ws://localhost:8080/", OnConnect, socketAdapter));
+        }
+
+        public ClientData(IClientWebSocket socketAdapter, int port, ref Task taskRef)
+        {
+            taskRef = Task.Factory.StartNew(() => WebClient.Connect("ws://localhost:" + port.ToString() + "/", OnConnect, socketAdapter));
         }
 
         private void OnConnect(WebClient _webClient)

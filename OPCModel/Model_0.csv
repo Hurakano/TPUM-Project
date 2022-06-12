@@ -1,0 +1,13 @@
+Book,1,ObjectType
+Book_Id,2,Variable
+Book_Title,3,Variable
+Book_Author,4,Variable
+Reader,5,ObjectType
+Reader_Id,6,Variable
+Reader_Name,7,Variable
+Loan,8,ObjectType
+Loan_Id,9,Variable
+Loan_BookId,10,Variable
+Loan_ReaderId,11,Variable
+Loan_BorrowDate,12,Variable
+Loan_ReturnDate,13,Variable

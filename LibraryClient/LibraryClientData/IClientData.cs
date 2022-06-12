@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
+using System.Threading.Tasks;
 
 namespace LibraryClient.LibraryClientData
 {
@@ -11,6 +12,7 @@ namespace LibraryClient.LibraryClientData
         public event EventHandler<List<Loan>> OnLoanOverdue;
 
         public bool SocketConnected { get; }
+        public Task Dissconnect();
 
         public Book GetBookById(Guid id);
         public Reader GetReaderById(Guid id);
