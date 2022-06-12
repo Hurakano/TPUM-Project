@@ -144,90 +144,40 @@ namespace LibraryClient.LibraryClientData
             StringReader reader = new StringReader(message);
             string command = reader.ReadLine();
 
-            switch(command)
+            switch (command)
             {
                 case "Books":
+                    List<Book> books = DataSerializer.JsonToListBook(reader.ReadLine());
                     lock (DataLock)
                     {
-                        Books = ParseBooks(reader);
+                        Books = books;
                     }
                     OnDataUpdated?.Invoke(this, 0);
                     break;
                 case "Readers":
+                    List<Reader> readers = DataSerializer.JsonToListReader(reader.ReadLine());
                     lock (DataLock)
                     {
-                        Readers = ParseReaders(reader);
+                        Readers = readers;
                     }
                     OnDataUpdated?.Invoke(this, 1);
                     break;
                 case "Loans":
+                    List<Loan> loans = DataSerializer.JsonToListLoan(reader.ReadLine());
                     lock (DataLock)
                     {
-                        Loans = ParseLoans(reader);
+                        Loans = loans;
                     }
                     OnDataUpdated?.Invoke(this, 2);
                     break;
                 case "Result":
-                    bool result = reader.ReadLine() == "true"? true: false;
+                    bool result = bool.Parse(reader.ReadLine());
                     OnResult?.Invoke(this, result);
                     break;
                 case "OverdueEvent":
-                    List<Loan> loans = ParseLoans(reader);
-                    OnLoanOverdue?.Invoke(this, loans);
+                    OnLoanOverdue?.Invoke(this, DataSerializer.JsonToListLoan(reader.ReadLine()));
                     break;
             }
-        }
-
-        private List<Book> ParseBooks(StringReader reader)
-        {
-            List<Book> books = new List<Book>();
-            int count = int.Parse(reader.ReadLine());
-
-            for (int i = 0; i < count; i++)
-            {
-                Guid id = Guid.Parse(reader.ReadLine());
-                string title = reader.ReadLine();
-                string author = reader.ReadLine();
-
-                books.Add(new BookImpl { Id = id, Title = title, Author = author });
-            }
-
-            return books;
-        }
-
-        private List<Reader> ParseReaders(StringReader reader)
-        {
-            List<Reader> readers = new List<Reader>();
-            int count = int.Parse(reader.ReadLine());
-
-            for (int i = 0; i < count; i++)
-            {
-                Guid id = Guid.Parse(reader.ReadLine());
-                string name = reader.ReadLine();
-
-                readers.Add(new ReaderImpl { Id = id, Name = name });
-            }
-
-            return readers;
-        }
-
-        private List<Loan> ParseLoans(StringReader reader)
-        {
-            List<Loan> loans = new List<Loan>();
-            int count = int.Parse(reader.ReadLine());
-
-            for (int i = 0; i < count; i++)
-            {
-                Guid id = Guid.Parse(reader.ReadLine());
-                Guid bookId = Guid.Parse(reader.ReadLine());
-                Guid readerId = Guid.Parse(reader.ReadLine());
-                DateTime borrowDate = DateTime.Parse(reader.ReadLine());
-                DateTime returnDate = DateTime.Parse(reader.ReadLine());
-
-                loans.Add(new LoanImpl { Id = id, BookId = bookId, ReaderId = readerId, BorrowDate = borrowDate, ReturnDate = returnDate});
-            }
-
-            return loans;
         }
     }
 }

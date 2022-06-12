@@ -106,11 +106,8 @@ namespace LibraryServer.ServerPresentation
         private void GetBooks()
         {
             List<BookDTO> books = LibraryLogic.GetAllBooks();
-            string message = "Books\n" + books.Count.ToString() + "\n";
-            foreach(BookDTO book in books)
-            {
-                message += BookToString(book);
-            }
+            string message = "Books\n";
+            message += DataSerializer.ListBookToJson(books);
 
             _ = SocketConnection.SendAsync(message);
         }
@@ -118,47 +115,31 @@ namespace LibraryServer.ServerPresentation
         {
             BookDTO book = LibraryLogic.GetBookByTitle(title);
             string message = "Book\n";
-            if (book != null)
-            {
-                message += BookToString(book);
-            }
-            else
-            {
-                message += "null\n";
-            }
+            message += DataSerializer.BookToJson(book);
 
             _ = SocketConnection.SendAsync(message);
         }
         private void GetReaders()
         {
             List<ReaderDTO> readers = LibraryLogic.GetAllReaders();
-            string message = "Readers\n" + readers.Count.ToString() + "\n";
-            foreach(ReaderDTO reader in readers)
-            {
-                message += ReaderToString(reader);
-            }
+            string message = "Readers\n";
+            message += DataSerializer.ListReadersToJson(readers);
 
             _ = SocketConnection.SendAsync(message);
         }
         private void GetLoans()
         {
             List<LoanDTO> loans = LibraryLogic.GetAllLoans();
-            string message = "Loans\n" + loans.Count.ToString() + "\n";
-            foreach(LoanDTO loan in loans)
-            {
-                message += LoanToString(loan);
-            }
+            string message = "Loans\n";
+            message += DataSerializer.ListLoanToJson(loans);
 
             _ = SocketConnection.SendAsync(message);
         }
         private void GetLoansByReader(Guid id)
         {
             List<LoanDTO> loans = LibraryLogic.GetAllLoansByReader(id);
-            string message = "Loan\n" + loans.Count.ToString() + "\n";
-            foreach(LoanDTO loan in loans)
-            {
-                message += LoanToString(loan);
-            }
+            string message = "Loan\n";
+            message += DataSerializer.ListLoanToJson(loans);
 
             _ = SocketConnection.SendAsync(message);
         }
@@ -166,49 +147,30 @@ namespace LibraryServer.ServerPresentation
         {
             LoanDTO loan = LibraryLogic.GetLoanById(id);
             string message = "Loan\n";
-            if (loan != null)
-                message += LoanToString(loan) + "\n";
-            else
-                message += "null\n";
+            message += DataSerializer.LoanToJson(loan);
 
             _ = SocketConnection.SendAsync(message);
         }
         private void GetAvailableBooks()
         {
             List<BookDTO> books = LibraryLogic.GetAvailableBooks();
-            string message = "AvailableBooks\n" + books.Count.ToString() + "\n";
-            foreach(BookDTO book in books)
-            {
-                message += BookToString(book);
-            }
+            string message = "AvailableBooks\n";
+            message += DataSerializer.ListBookToJson(books);
 
             _ = SocketConnection.SendAsync(message);
         }
         private void ReturnBook(Guid id)
         {
             bool result = LibraryLogic.ReturnBook(id);
-            string message = "Result\n" + (result ? "true\n" : "false\n");
+            string message = "Result\n" + result.ToString();
             _ = SocketConnection.SendAsync(message);
         }
         private void BorrowBook(Guid bookId, Guid readerId, DateTime returnDate)
         {
             DateTime borrowDate = DateTime.Now;
             bool result = LibraryLogic.LoanBook(readerId, bookId, borrowDate, returnDate);
-            string message = "Result\n" + (result ? "true\n" : "false\n");
+            string message = "Result\n" + result.ToString();
             _ = SocketConnection.SendAsync(message);
-        }
-        private static string BookToString(BookDTO book)
-        {
-            return book.Id.ToString() + "\n" + book.Title + "\n" + book.Author + "\n";
-        }
-        private static string ReaderToString(ReaderDTO reader)
-        {
-            return reader.Id.ToString() + "\n" + reader.Name + "\n";
-        }
-        private static string LoanToString(LoanDTO loan)
-        {
-            return loan.Id.ToString() + "\n" + loan.BookId.ToString() + "\n" + loan.ReaderId.ToString() + "\n" +
-                   loan.BorrowDate.ToString() + "\n" + loan.ReturnDate.ToString() + "\n";
         }
 
         public void OnCompleted()
@@ -226,12 +188,7 @@ namespace LibraryServer.ServerPresentation
         public void OnNext(List<LoanDTO> value)
         {
             string message = "OverdueEvent\n";
-            message += value.Count.ToString() + "\n";
-
-            foreach(LoanDTO loan in value)
-            {
-                message += LoanToString(loan);
-            }
+            message += DataSerializer.ListLoanToJson(value);
 
             _ = SocketConnection.SendAsync(message);
         }

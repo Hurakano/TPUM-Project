@@ -25,7 +25,9 @@ namespace LibraryClient.LibraryClientData.Test
         {
             string readerName = "ReaderNameTest";
             Reader testReader = new ReaderImplTest { Id = Guid.NewGuid(), Name = readerName };
-            string readerMessage = "Readers\n1\n" + testReader.Id.ToString() + "\n" + testReader.Name + "\n";
+            List<Reader> readers = new List<Reader> { testReader };
+            
+            string readerMessage = "Readers\n" + DataSerializer.ListReaderToJson(readers);
             ((ClientData)Client).HandleMessage(readerMessage);
 
             List<Reader> readersCheck = Client.GetReaders();
@@ -39,7 +41,8 @@ namespace LibraryClient.LibraryClientData.Test
             Guid bookId = Guid.NewGuid();
             string bookTitle = "BookTitleTest";
             Book testBook = new BookImplTest { Id = bookId, Title = bookTitle, Author = "Author" };
-            string bookMessage = "Books\n1\n" + testBook.Id.ToString() + "\n" + testBook.Title + "\n" + testBook.Author + "\n";
+            List<Book> books = new List<Book> { testBook };
+            string bookMessage = "Books\n" + DataSerializer.ListBookToJson(books);
             ((ClientData)Client).HandleMessage(bookMessage);
 
             Book bookCheck = Client.GetBookById(bookId);
@@ -53,7 +56,8 @@ namespace LibraryClient.LibraryClientData.Test
             Guid bookId = Guid.NewGuid();
             Guid loanId = Guid.NewGuid();
             Loan testLoan = new LoanImplTest { Id = loanId, BookId = bookId, ReaderId = Guid.NewGuid(), BorrowDate = new DateTime(), ReturnDate = new DateTime() };
-            string loanMessage = "Loans\n1\n" + testLoan.Id.ToString() + "\n" + testLoan.BookId.ToString() + "\n" + testLoan.ReaderId.ToString() + "\n" + testLoan.BorrowDate.ToString() + "\n" + testLoan.ReturnDate.ToString() + "\n";
+            List<Loan> loans = new List<Loan> { testLoan };
+            string loanMessage = "Loans\n" + DataSerializer.ListLoanToJson(loans);
             ((ClientData)Client).HandleMessage(loanMessage);
 
             Loan loanCheck = Client.GetLoanById(loanId);
