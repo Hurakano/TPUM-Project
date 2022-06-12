@@ -4,6 +4,7 @@ using LibraryServer.ServerPresentation;
 using LibraryClient.LibraryClientData;
 using System.Collections.Generic;
 using System.Threading;
+using System;
 
 namespace IntegrationTest
 {
@@ -51,6 +52,15 @@ namespace IntegrationTest
                 timeout--;
             }
             Assert.IsTrue(client.SocketConnected);
+
+            client.ReturnBook(Guid.NewGuid());
+            timeout = 100;
+            while (messages.Count == 0 && timeout > 0)
+            {
+                await Task.Delay(10);
+                timeout--;
+            }
+            Assert.IsTrue(messages.Count > 0);
 
             await client.Dissconnect();
             serverToken.Cancel();

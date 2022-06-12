@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace LibraryServer.ServerPresentation
 {
-    public abstract class WebSocketConnection
+    abstract class WebSocketConnection
     {
         public virtual Action<string> OnMessage { set; protected get; } = x => { };
         public virtual Action OnClose { set; protected get; } = () => { };

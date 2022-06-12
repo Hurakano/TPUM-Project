@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Net.WebSockets;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("IntegrationTest")]
+[assembly: InternalsVisibleTo("ClientDataTests")]
 namespace LibraryClient.LibraryClientData
 {
-    public class ClientData : IClientData
+    class ClientData : IClientData
     {
         public event EventHandler<bool> OnResult;
         public event EventHandler<int> OnDataUpdated;

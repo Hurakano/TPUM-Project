@@ -4,10 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.WebSockets;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("IntegrationTest")]
 namespace LibraryServer.ServerPresentation
 {
-    public static class WebServer
+    static class WebServer
     {
         private static HttpListener server = null;
 
